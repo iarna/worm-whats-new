@@ -1,0 +1,30 @@
+{
+  "name": "worm-whats-new",
+  "version": "1.0.0",
+  "description": "This is the source for producing the external links in the [What Happened This Week in Worm Fanfic](https://forums.sufficientvelocity.com/threads/wormverse-ideas-recs-and-fic-discussion-thread-1.190/page-2760#post-8554383) that I've been putting together.",
+  "main": "last-week.js",
+  "scripts": {
+    "build": "node last-week.js",
+    "build-next": "node this-week.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iarna/external-whats-new-links.git"
+  },
+  "keywords": [],
+  "author": "Rebecca Turner <me@re-becca.org> (http://re-becca.org/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iarna/external-whats-new-links/issues"
+  },
+  "homepage": "https://github.com/iarna/external-whats-new-links#readme",
+  "dependencies": {
+    "approximate-number": "^2.0.0",
+    "funstream": "^1.0.0",
+    "html-template-tag": "^1.0.0",
+    "minipass": "^2.0.2",
+    "moment": "^2.18.1",
+    "ndjson": "^1.5.0",
+    "qw": "^1.0.1"
+  }
+}
