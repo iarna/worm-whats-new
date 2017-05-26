@@ -1,10 +1,15 @@
 'use strict'
+/***
+ This JS is terrible and bullshit, you probably want look away.
+ <3 iarna
+ ***/
 const fs = require('fs')
 const readFics = require('./read-fics.js')
 const html = require('./html-template-tag')
 const approx = require('approximate-number');
 const moment = require('moment')
 const MiniPass = require('minipass')
+const writtenNumber = require('written-number')
 const qw = require('qw')
 
 const xoverLinks = require('./substitutions/xover.js')
@@ -71,10 +76,12 @@ function printSummary (start, end, ourStream) {
       fic.oldChapters = fic.meta ? fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
       const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
       const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).subtract(3, 'month')
+      if (fic.tags.some(t => t === 'Snippets')) {
+        fic.title = fic.title.replace(/^[^:]+: /i, '')
+      }
       if (fic.status === 'complete') {
         bucket(fic).completed.push(fic)
       } else if (fic.status === 'one-shot') {
-        fic.title = fic.title.replace(/^[^:]+snip[^:]+: /i, '')
         bucket(fic).oneshot.push(fic)
       } else if (start.isSameOrBefore(fic.pubdate)) {
         bucket(fic).new.push(fic)
@@ -88,7 +95,8 @@ function printSummary (start, end, ourStream) {
       ourStream.write('<!DOCTYPE html>\n')
       ourStream.write('<html>\n')
       ourStream.write('<head>\n')
-      ourStream.write(html`<head><title>Worm fanfic in the week of ${week}</title>\n`)
+      ourStream.write('<meta charset="utf-8">\n')
+      ourStream.write(html`<title>Worm fanfic in the week of ${week}</title>\n`)
       ourStream.write(html`<style>
   body {
     margin-left: auto;
@@ -101,6 +109,7 @@ function printSummary (start, end, ourStream) {
   .week {
     white-space: nowrap;
   }
+  a { text-decoration: none; }
   </style>\n`)
       ourStream.write('</head>\n')
       ourStream.write('<body>\n')
@@ -108,44 +117,52 @@ function printSummary (start, end, ourStream) {
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
-          updates.push(html`new ${type}s: ${changes[type].new.length}`)
+          updates.push(html`<a href="#new-${type}">${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}</a>`)
         }
         if (changes[type].completed.length) {
-          updates.push(html`completed ${type}s: ${changes[type].completed.length}`)
+          updates.push(html`<a href="#completed-${type}">${writtenNumber(changes[type].completed.length)} completed ${things(changes[type].completed.length, type)}</a>`)
         }
         if (changes[type].oneshot.length) {
-          updates.push(html`new one-shot ${type}s: ${changes[type].oneshot.length}`)
+          updates.push(html`<a href="#one-shot-${type}">${writtenNumber(changes[type].oneshot.length)} new one-shot ${things(changes[type].oneshot.length, type)}</a>`)
         }
-        const updated = changes[type].updated.length + changes[type].revived.length 
-        if (updated) {
-          updates.push(html`updated ${type}s: ${updated}`)
+        if (changes[type].revived.length) {
+          updates.push(html`<a href="#revived-${type}">${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}</a>`)
         }
-        ourStream.write(`${ucfirst(updates.join(', '))}<br>\n`)
+        if (changes[type].updated.length) {
+          updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
+        }
+        const last = updates.pop()
+        const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
+        if (type === 'fic') {
+          ourStream.write(`There were ${updatestr}.<br>\n`)
+        } else {
+          ourStream.write(`There were also ${updatestr}.<br>\n`)
+        }
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].new.length) continue
-        ourStream.write(`<h2><u>New ${ucfirst(type)}s</u></h2>\n`)
+        ourStream.write(`<h2><u><a name="new-${type}">New ${ucfirst(type)}s</u></h2>\n`)
         changes[type].new.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`New ${type}:`, changes[type].new.length)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].completed.length) continue
-        ourStream.write(`<h2><u>Completed ${ucfirst(type)}s</u></h2>\n`)
+        ourStream.write(`<h2><u><a name="completed-${type}">Completed ${ucfirst(type)}s</u></h2>\n`)
         changes[type].completed.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`Completed ${type}:`, changes[type].completed.length)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].oneshot.length) continue
-        ourStream.write(`<h2><u>One-shot ${ucfirst(type)}s</u></h2>\n`)
+        ourStream.write(`<h2><u><a name="one-shot-${type}">One-shot ${ucfirst(type)}s</u></h2>\n`)
         changes[type].oneshot.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`One-shot ${type}:`, changes[type].oneshot.length)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].revived.length) continue
-        ourStream.write(`<h2><u>Revived ${ucfirst(type)}s</u></h2>\n`)
+        ourStream.write(`<h2><u><a name="revived-${type}">Revived ${ucfirst(type)}s</u></h2>\n`)
         ourStream.write(`<p style="margin-top: -1em;"><em>(last update was ≥ 3 months ago)</em></p>\n`)
         changes[type].revived.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
@@ -153,7 +170,7 @@ function printSummary (start, end, ourStream) {
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].updated.length) continue
-        ourStream.write(`<h2><u>Updated ${ucfirst(type)}s</u></h2>\n`)
+        ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
         changes[type].updated.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`Updated ${type}:`, changes[type].updated.length)
@@ -167,6 +184,7 @@ function printFic (ourStream, fic) {
   const chapters = fic.meta.chapters.length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
+
 
   const author = fic.authorurl ? html`<a href="${fic.authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
@@ -185,7 +203,7 @@ function printFic (ourStream, fic) {
   const characters = fic.tags.filter(t => /^character:/.test(t))
        .map(t => t.slice(10).replace(/ \(Worm\)/, '').replace(/ - Character/i, ''))
        .map(t => tagify(t, tagLinks))
-  const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest)$/i.test(t))
+  const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
     .map(t => t.replace(/^freeform:/, ''))
     .map(t => /altpower:/.test(t) ? tagify(tagify(tagify(t, charLinks), tagLinks), xoverLinks) : t)
   ourStream.write(html`<br><b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)
@@ -205,6 +223,13 @@ function printFic (ourStream, fic) {
   ourStream.write('</article>\n')
 }
 
+function things (num, thing) {
+  if (num === 1) {
+    return thing
+  } else {
+    return thing + 's'
+  }
+}
 function cstr (chapters) {
   if (chapters === 1) {
     return `${chapters} chapter`
