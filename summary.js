@@ -1,7 +1,7 @@
 'use strict'
 const fs = require('fs')
 const readFics = require('./read-fics.js')
-const html = require('html-template-tag')
+const html = require('./html-template-tag')
 const approx = require('approximate-number');
 const moment = require('moment')
 const MiniPass = require('minipass')

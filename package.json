@@ -21,7 +21,7 @@
   "dependencies": {
     "approximate-number": "^2.0.0",
     "funstream": "^1.0.1",
-    "html-template-tag": "^1.0.0",
+    "html-escape": "^2.0.0",
     "minipass": "^2.0.2",
     "moment": "^2.18.1",
     "ndjson": "^1.5.0",
