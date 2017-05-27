@@ -19,8 +19,19 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 module.exports = (pivot, week) => {
-  const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0}).day((pivot - 7) + week)
-  const end   = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0}).day(pivot + week)
+  const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
+  if (start.day >= pivot) {
+    start.week(start.week()+1)
+  }
+  start.day(pivot)
+  start.week(start.week() + week)
+
+  const end = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
+  if (end.day >= pivot) {
+    end.add(end.week()+1)
+  }
+  end.day(pivot)
+  end.week(end.week() + week + 1)
 
   const ourStream = new MiniPass()
 
