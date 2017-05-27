@@ -12,6 +12,7 @@ module.exports = {
   "Bohu": "http://worm.wikia.com/wiki/Bohu",
   "Cherie": "http://worm.wikia.com/wiki/Cherish",
   "Chris": "http://worm.wikia.com/wiki/Kid_Win",
+  "Dennis": "http://worm.wikia.com/wiki/Clockblocker",
   "Dinah": "http://worm.wikia.com/wiki/Dinah",
   "Dragon": "http://worm.wikia.com/wiki/Dragon",
   "Emma": "http://worm.wikia.com/wiki/Emma_Barnes",
