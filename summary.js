@@ -259,7 +259,7 @@ function tagify (thing, links) {
   return thing
 }
 function linkUp (things, links) {
-  return things.map(thing => tagify(thing, links)) //links[thing] ? html`<a href="${links[thing]}">${thing}</a>` : `${thing}`)
+  return things.map(thing => tagify(thing, links))
 }
 
 function ucfirst (str) {
