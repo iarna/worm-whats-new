@@ -51,7 +51,7 @@ function inRange (date, start, end) {
  return start.isSameOrBefore(date) && end.isAfter(date)
 }
 function chapterDate (chap) {
-  return moment(chap.modified || chap.created)
+  return moment(chap.modified || chap.created).utc()
 }
 
 function printSummary (start, end, ourStream) {
