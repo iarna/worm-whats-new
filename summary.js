@@ -65,7 +65,7 @@ function printSummary (start, end, ourStream) {
 
   readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
-    .filter(fic => inRange(fic.updated, start, end))
+    .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .forEach(fic => {
       fic.newChapters = fic.meta ? fic.meta.chapters.filter(chap => inRange(chapterDate(chap), start, end)) : []
