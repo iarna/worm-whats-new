@@ -109,7 +109,7 @@ function printSummary (start, end, ourStream) {
   .week {
     white-space: nowrap;
   }
-  a { text-decoration: none; }
+  a[href] { text-decoration: none; color: ForestGreen; }
   </style>\n`)
       ourStream.write('</head>\n')
       ourStream.write('<body>\n')
