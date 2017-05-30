@@ -201,7 +201,7 @@ function printFic (ourStream, fic) {
   const author = authorurl ? html`<a href="${authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
-  ourStream.write(html`<b><a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${fic.title}</a>${[follows]} (${approx(newWords)} words) `)
+  ourStream.write(html`<b><a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${fic.title}</a>${[follows]} (Added: ${approx(newWords)} words) `)
   ourStream.write(`by ${author}</b>\n`)
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
