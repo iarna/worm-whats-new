@@ -197,7 +197,8 @@ function printFic (ourStream, fic) {
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
 
 
-  const author = fic.authorurl ? html`<a href="${fic.authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
+  const authorurl = fic.authorurl || fic.meta.authorUrl
+  const author = authorurl ? html`<a href="${authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
   ourStream.write(html`<b><a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${fic.title}</a>${[follows]} (${approx(newWords)} words) `)
