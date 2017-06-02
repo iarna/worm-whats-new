@@ -255,7 +255,7 @@ function strify (things, links) {
 }
 function tagify (thing, links) {
   for (let link of Object.keys(links)) {
-    thing = thing.replace(new RegExp(link), `<a href="${links[link]}">${link}</a>`)
+    thing = thing.replace(new RegExp('\\b' + link + '\\b'), `<a href="${links[link]}">${link}</a>`)
   }
   return thing
 }
