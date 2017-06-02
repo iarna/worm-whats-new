@@ -19,6 +19,7 @@ module.exports = {
   "Dragon": "http://worm.wikia.com/wiki/Dragon",
   "Emma": "http://worm.wikia.com/wiki/Emma_Barnes",
   "Jack Slash": "http://worm.wikia.com/wiki/Jack_Slash",
+  "Krouse": "http://worm.wikia.com/wiki/Trickster",
   "Leet": "http://worm.wikia.com/wiki/Leet",
   "Lisa": "http://worm.wikia.com/wiki/Tattletale",
   "Madison": "http://worm.wikia.com/wiki/Madison_Clements",
