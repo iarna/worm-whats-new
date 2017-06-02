@@ -119,6 +119,7 @@ function printSummary (start, end, ourStream) {
 function printFic (ourStream, fic) {
   const chapters = fic.meta.chapters.length
   const newChapters = fic.newChapters.length
+  const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
   const authorurl = fic.authorurl || fic.meta.authorUrl
   let summary = []
@@ -126,7 +127,8 @@ function printFic (ourStream, fic) {
     summary.push(html`<b>Follows:</b> ${tagify(fic.series, ficLinks)})`)
   }
   summary.push(html`<b>Status:</b> ${fic.status}`)
-  summary.push(html`<b>Added:</b> ${approx(newWords)} words)`)
+  summary.push(html`<b>Added:</b> ${cstr(newChapters)}, ${approx(newWords)} words)`)
+  summary.push(html`<b>Total length:</b> <a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${cstr(chapters)}, ${approx(fic.words)} words</a>`)
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   const xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
@@ -142,7 +144,6 @@ function printFic (ourStream, fic) {
   const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
     .map(t => t.replace(/^freeform:/, ''))
     .map(t => /altpower:/.test(t) ? tagify(tagify(tagify(t, charLinks), tagLinks), xoverLinks) : t)
-  summary.push(html`<b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)
   summary.push(html`<b>Updated on:</b> ${chapterDate(fic.newChapters[fic.newChapters.length -1]).format('ddd [at] h a')} UTC`)
   if (genre.length !== 0) summary.push(html`<b>Genre:</b> ${genre.join(', ')}\n`)
   if (category.length !== 0) summary.push(`<b>Category:</b> ${strify(category, catLinks)}\n`)
@@ -161,8 +162,8 @@ function printFic (ourStream, fic) {
     <id>${fic.identifiers.replace(/^ur[li]:/,'')}#${fic.meta.chapters.length}</id>
     <published>${moment(fic.meta.created || fic.pubate).toISOString()}</published>
     <updated>${moment(fic.meta.modified || fic.updated).toISOString()}</updated>
-    <link href="${fic.identifiers.replace(/^ur[li]:/,'')}"/>
-    <title>${fic.title}</title>
+    <link href="${firstUpdate.link}"/>
+    <title>${fic.title} - ${firstUpdate.name}</title>
     <summary type="html">${summary.join('<br>\n')}</summary>
     <author>
       <name>${fic.authors}</name>

@@ -195,14 +195,15 @@ function printFic (ourStream, fic) {
   const chapters = fic.meta.chapters.length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
-
+  const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
 
   const authorurl = fic.authorurl || fic.meta.authorUrl
   const author = authorurl ? html`<a href="${authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
-  ourStream.write(html`<b><a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${fic.title}</a>${[follows]} (Added: ${approx(newWords)} words) `)
-  ourStream.write(`by ${author}</b>\n`)
+  ourStream.write(html`<b><a href="${firstUpdate.link}" title="${firstUpdate.name}">${fic.title}</a>${[follows]} (${cstr(newChapters, 'new')}, ${approx(newWords)} words)\n`)
+  ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
+  ourStream.write(html`<br><b>Total length:</b> <a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${cstr(chapters)}, ${approx(fic.words)} words</a>\n`)
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   const xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
@@ -218,7 +219,6 @@ function printFic (ourStream, fic) {
   const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
     .map(t => t.replace(/^freeform:/, ''))
     .map(t => /altpower:/.test(t) ? tagify(tagify(tagify(t, charLinks), tagLinks), xoverLinks) : t)
-  ourStream.write(html`<br><b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)
   ourStream.write(html`<br><b>Updated on:</b> ${chapterDate(fic.newChapters[fic.newChapters.length -1]).format('ddd [at] h a')} UTC`)
   if (genre.length !== 0) ourStream.write(html`<br><b>Genre:</b> ${genre.join(', ')}\n`)
   if (category.length !== 0) ourStream.write(`<br><b>Category:</b> ${strify(category, catLinks)}\n`)
@@ -242,11 +242,12 @@ function things (num, thing) {
     return thing + 's'
   }
 }
-function cstr (chapters) {
+function cstr (chapters, chapterPrefix) {
+  const pre = chapterPrefix ? `${chapterPrefix} ` : ''
   if (chapters === 1) {
-    return `${chapters} chapter`
+    return `${chapters} ${pre}chapter`
   } else {
-    return `${chapters} chapters`
+    return `${chapters} ${pre}chapters`
   }
 }
 
