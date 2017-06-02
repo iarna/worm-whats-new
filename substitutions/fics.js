@@ -7,6 +7,7 @@ These are fics that either:
 module.exports = {
   "Crouching Tiger": "https://forums.spacebattles.com/threads/crouching-tiger-worm-au-alt-power.382703/",
   "Deputy": "https://forums.spacebattles.com/threads/deputy-internship-worm-au-au.483163/",
+  "Grimm Mother": "https://forums.spacebattles.com/threads/grimm-mother-worm-rwby.486124/",
   "Hyperdimension Taylor": "https://forums.spacebattles.com/threads/hyperdimension-taylor.423146/",
   "Monster": "https://forums.sufficientvelocity.com/threads/monster.29235/",
   "With Friends Like These": "https://forums.sufficientvelocity.com/threads/with-friends-like-these-altpower-taylor-worm-x-post.9324/",
