@@ -3,6 +3,7 @@ This is series that Worm fics may show up as a crossover or fusion with.
 These can also be used as sources for altpowers.
 */
 module.exports = {
+  "A Song of Ice and Fire": "https://en.wikipedia.org/wiki/A_Song_of_Ice_and_Fire",
   "Bionicle": "https://en.wikipedia.org/wiki/Bionicle",
   "Blame!": "https://en.wikipedia.org/wiki/Blame!",
   "Boku no Hero Academia": "https://en.wikipedia.org/wiki/My_Hero_Academia",
