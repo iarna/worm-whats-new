@@ -14,6 +14,7 @@ module.exports = {
   "Danny Phantom": "https://en.wikipedia.org/wiki/Danny_Phantom",
   "Dark Souls 2": "https://en.wikipedia.org/wiki/Dark_Souls_II",
   "Death Note": "https://en.wikipedia.org/wiki/Death_Note",
+  "Destiny": "https://en.wikipedia.org/wiki/Destiny_(video_game)",
   "Diablo": "https://en.wikipedia.org/wiki/Diablo_(video_game)",
   "Disgaea": "https://en.wikipedia.org/wiki/Disgaea",
   "Doctor Who": "https://en.wikipedia.org/wiki/Doctor_Who",
