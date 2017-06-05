@@ -4,8 +4,8 @@
   "description": "This is the source for producing the external links in the [What Happened This Week in Worm Fanfic](https://forums.sufficientvelocity.com/threads/wormverse-ideas-recs-and-fic-discussion-thread-1.190/page-2760#post-8554383) that I've been putting together.",
   "main": "last-week.js",
   "scripts": {
-    "build": "node last-week.js && node last-week-atom.js",
-    "build-next": "node this-week.js && node this-week-atom.js"
+    "build": "node last-week.js && node last-week-atom.js && node last-week-md.js && node last-week-bbcode.js",
+    "build-next": "node this-week.js && node this-week-atom.js && node this-week-md.js && node this-week-bbcode.js"
   },
   "repository": {
     "type": "git",
