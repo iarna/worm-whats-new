@@ -25,6 +25,7 @@ module.exports = {
   "Peggy Sue": "http://tvtropes.org/pmwiki/pmwiki.php/Main/PeggySue",
   "SI": "http://tvtropes.org/pmwiki/pmwiki.php/Main/SelfInsertFic",
   "WAFF": "http://tvtropes.org/pmwiki/pmwiki.php/Main/WAFF",
+  "CYOA": "https://www.reddit.com/r/makeyourchoice/",
 
 // possibly obscure terms
   "Mando": "https://www.urbandictionary.com/define.php?term=Mando",
