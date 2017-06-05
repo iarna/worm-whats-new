@@ -73,6 +73,7 @@ function printSummary (start, end, ourStream) {
   }
   const isQuest = fic => fic.tags.some(t => t === 'Quest')
   const bucket = fic => changes[isQuest(fic) ? 'quest' : 'fic']
+  const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
 
   readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
@@ -108,6 +109,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write('<head>\n')
       ourStream.write('<meta charset="utf-8">\n')
       ourStream.write(html`<title>Worm fanfic in the week of ${week}</title>\n`)
+      ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`
       ourStream.write(html`<style>
   body {
     margin-left: auto;
