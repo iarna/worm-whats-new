@@ -1,4 +1,8 @@
 *.html
+*.xml
+*.bbcode
+*.md
+!README.md
 node_modules
 *~
 .#*
