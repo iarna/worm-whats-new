@@ -74,8 +74,8 @@ function printSummary (start, end, ourStream) {
   const isQuest = fic => fic.tags.some(t => t === 'Quest')
   const bucket = fic => changes[isQuest(fic) ? 'quest' : 'fic']
 
-  const xml  = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}.xml`
-  const html = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}.html`
+  const xml  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
+  const html = `https://shared.by.re-becca.org/misc/worm/this-week.html`
   ourStream.write('<?xml version="1.0" encoding="UTF-8"?>\n')
   ourStream.write('<feed xml:lang="en-US" xmlns="http://www.w3.org/2005/Atom">\n')
   ourStream.write(`  <id>${xml}</id>\n`)
