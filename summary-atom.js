@@ -20,14 +20,14 @@ const catLinks = require('./substitutions/cats.js')
 
 module.exports = (pivot, week) => {
   const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
-  if (start.day >= pivot) {
-    start.week(start.week()+1)
+  if (start.day() < pivot) {
+    start.week(start.week()-1)
   }
   start.day(pivot)
   start.week(start.week() + week)
 
   const end = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
-  if (end.day >= pivot) {
+  if (end.day() >= pivot) {
     end.add(end.week()+1)
   }
   end.day(pivot)
