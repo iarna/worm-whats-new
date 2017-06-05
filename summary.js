@@ -108,7 +108,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write('<html>\n')
       ourStream.write('<head>\n')
       ourStream.write('<meta charset="utf-8">\n')
-      ourStream.write(html`<title>Worm fanfic in the week of ${week}</title>\n`)
+      ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
       ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`
       ourStream.write(html`<style>
   body {
@@ -126,7 +126,7 @@ function printSummary (start, end, ourStream) {
   </style>\n`)
       ourStream.write('</head>\n')
       ourStream.write('<body>\n')
-      ourStream.write(`<h2>Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
+      ourStream.write(`<h2>New and updated Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
