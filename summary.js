@@ -109,7 +109,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write('<head>\n')
       ourStream.write('<meta charset="utf-8">\n')
       ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
-      ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`
+      ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`)
       ourStream.write(html`<style>
   body {
     margin-left: auto;
