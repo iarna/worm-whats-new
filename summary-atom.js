@@ -35,7 +35,7 @@ module.exports = (pivot, week) => {
 
   const ourStream = new MiniPass()
 
-  printSummary(start, end, ourStream)
+  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
   return ourStream
 }
 
@@ -84,7 +84,7 @@ function printSummary (start, end, ourStream) {
   ourStream.write(`  <title>This week's Worm fanfic updates</title>\n`)
   ourStream.write(`  <updated>${new Date().toISOString()}</updated>\n`)
 
-  readFics(`${__dirname}/Fanfic.json`)
+  return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
     .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
@@ -110,7 +110,7 @@ function printSummary (start, end, ourStream) {
         fic.status = 'updated'
       }
       printFic(ourStream, fic)
-    }).finally(() => {
+    }).then(() => {
       ourStream.write('</feed>\n')
       ourStream.end()
     })

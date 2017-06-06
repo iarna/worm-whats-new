@@ -34,7 +34,7 @@ module.exports = (pivot, week) => {
 
   const ourStream = new MiniPass()
 
-  printSummary(start, end, ourStream)
+  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
   return ourStream
 }
 
@@ -75,7 +75,7 @@ function printSummary (start, end, ourStream) {
   const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
   const htmlUrl = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}.html`
 
-  readFics(`${__dirname}/Fanfic.json`)
+  return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
     .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
@@ -102,7 +102,7 @@ function printSummary (start, end, ourStream) {
       } else {
         bucket(fic).updated.push(fic)
       }
-    }).finally(() => {
+    }).then(() => {
       const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
       ourStream.write(`New and updated fanfic in the week of ${week}\n\n`)
       for (let type of qw`fic quest`) {

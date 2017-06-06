@@ -35,7 +35,7 @@ module.exports = (pivot, week) => {
 
   const ourStream = new MiniPass()
 
-  printSummary(start, end, ourStream)
+  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
   return ourStream
 }
 
@@ -75,7 +75,7 @@ function printSummary (start, end, ourStream) {
   const bucket = fic => changes[isQuest(fic) ? 'quest' : 'fic']
   const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
 
-  readFics(`${__dirname}/Fanfic.json`)
+  return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
     .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
@@ -102,7 +102,7 @@ function printSummary (start, end, ourStream) {
       } else {
         bucket(fic).updated.push(fic)
       }
-    }).finally(() => {
+    }).then(() => {
       const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
       ourStream.write('<!DOCTYPE html>\n')
       ourStream.write('<html>\n')
