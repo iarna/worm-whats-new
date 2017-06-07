@@ -6,6 +6,7 @@ const moment = require('moment')
 readFics(`${__dirname}/Fanfic.json`)
   .filter(fic => fic.fandom === 'Worm')
   .filter(fic => fic.tags.some(t => /SEARCH TERM/i.test(t)))
+  .sort((a, b) => moment(a.updated).isAfter(b.updated) ? -1 : moment(a.updated).isBefore(b.updated) ? 1 : 0)
   .forEach(printFic)
 
 function printFic (fic) {

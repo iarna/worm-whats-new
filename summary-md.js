@@ -10,6 +10,7 @@ const moment = require('moment')
 const MiniPass = require('minipass')
 const writtenNumber = require('written-number')
 const qw = require('qw')
+const titleSort = require('./title-sort.js')
 
 const xoverLinks = require('./substitutions/xover.js')
 const ficLinks = require('./substitutions/fics.js')
@@ -79,6 +80,7 @@ function printSummary (start, end, ourStream) {
     .filter(fic => fic.fandom === 'Worm')
     .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
+    .sort(titleSort(fic => fic.title))
     .forEach(fic => {
       fic.newChapters = fic.meta ? fic.meta.chapters.filter(chap => inRange(chapterDate(chap), start, end)) : []
       if (!fic.newChapters.length) {
@@ -154,32 +156,32 @@ function printSummary (start, end, ourStream) {
       for (let type of qw`fic quest`) {
         if (!changes[type].new.length) continue
         ourStream.write(`**New ${ucfirst(type)}s**\n\n`)
-        changes[type].new.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].new.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`\n\n`)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].completed.length) continue
         ourStream.write(`**Completed ${ucfirst(type)}s**\n\n`)
-        changes[type].completed.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].completed.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`\n\n`)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].oneshot.length) continue
         ourStream.write(`**One-shot ${ucfirst(type)}s**\n\n`)
-        changes[type].oneshot.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].oneshot.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`\n\n`)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].revived.length) continue
         ourStream.write(`**Revived ${ucfirst(type)}s**\n`)
         ourStream.write(`_(last update was ≥ 3 months ago)_\n\n`)
-        changes[type].revived.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].revived.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`\n\n`)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].updated.length) continue
         ourStream.write(`**Updated ${ucfirst(type)}s**\n\n`)
-        changes[type].updated.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].updated.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`\n\n`)
       }
       ourStream.end()

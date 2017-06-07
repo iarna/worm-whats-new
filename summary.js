@@ -11,6 +11,7 @@ const moment = require('moment')
 const MiniPass = require('minipass')
 const writtenNumber = require('written-number')
 const qw = require('qw')
+const titleSort = require('./title-sort.js')
 
 const xoverLinks = require('./substitutions/xover.js')
 const ficLinks = require('./substitutions/fics.js')
@@ -79,6 +80,7 @@ function printSummary (start, end, ourStream) {
     .filter(fic => fic.fandom === 'Worm')
     .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
+    .sort(titleSort(fic => fic.title))
     .forEach(fic => {
       fic.newChapters = fic.meta ? fic.meta.chapters.filter(chap => inRange(chapterDate(chap), start, end)) : []
       if (!fic.newChapters.length) {
@@ -155,21 +157,21 @@ function printSummary (start, end, ourStream) {
       for (let type of qw`fic quest`) {
         if (!changes[type].new.length) continue
         ourStream.write(`<h2><u><a name="new-${type}">New ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].new.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].new.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`New ${type}:`, changes[type].new.length)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].completed.length) continue
         ourStream.write(`<h2><u><a name="completed-${type}">Completed ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].completed.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].completed.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`Completed ${type}:`, changes[type].completed.length)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].oneshot.length) continue
         ourStream.write(`<h2><u><a name="one-shot-${type}">One-shot ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].oneshot.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].oneshot.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`One-shot ${type}:`, changes[type].oneshot.length)
       }
@@ -177,14 +179,14 @@ function printSummary (start, end, ourStream) {
         if (!changes[type].revived.length) continue
         ourStream.write(`<h2><u><a name="revived-${type}">Revived ${ucfirst(type)}s</u></h2>\n`)
         ourStream.write(`<p style="margin-top: -1em;"><em>(last update was ≥ 3 months ago)</em></p>\n`)
-        changes[type].revived.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].revived.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`Revived ${type}:`, changes[type].revived.length)
       }
       for (let type of qw`fic quest`) {
         if (!changes[type].updated.length) continue
         ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].updated.sort((a, b) => a.title.localeCompare(b.title)).forEach(fic => printFic(ourStream, fic))
+        changes[type].updated.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
         console.error(`Updated ${type}:`, changes[type].updated.length)
       }
