@@ -151,7 +151,8 @@ function printSummary (start, end, ourStream) {
       ourStream.write(`* [May 14th - May 21st 2017](https://www.reddit.com/r/WormFanfic/comments/6c5ywx/new_stories_for_the_week_of_may_14th_2017/)\n`)
       ourStream.write(`* [May 7th - May 14th 2017](https://www.reddit.com/r/WormFanfic/comments/6ascfv/new_stories_and_updates_for_the_week_of_may_7th/)\n`)
 
-      ourStream.write(`\n**Concise list of updated fics:** (click through above for a listing with more details and crosslinking)\n\n`)
+      ourStream.write(`\n**Concise list of updated fics:**\n\n`)
+      ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
       for (let type of qw`fic quest`) {
         if (!changes[type].new.length) continue

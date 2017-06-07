@@ -147,7 +147,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write(`[*] If you're technically inclined, you can find the source for the generator [url=https://github.com/iarna/worm-whats-new]over on github[/url]. I'm afraid the source is kinda garbage though. You can also find the giiiagantic JSON file I use as source material.\n`)
       ourStream.write(`[/list]\n`)
       ourStream.write(`\nPrevious weeks:\n\n`)
-      ourStream.write(`[LIST]`)
+      ourStream.write(`[LIST]\n`)
       ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8639589/']May 27th - June 2nd[/URL]\n`)
       ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8595644/']May 21st - May 26th[/URL]\n`)
       ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8554383/']May 14th - May 21st 2017[/URL]\n`)
@@ -157,8 +157,8 @@ function printSummary (start, end, ourStream) {
       ourStream.write(`[*][URL='https://forums.spacebattles.com/posts/35203834/']May 14th - May 21st 2017[/URL]\n`)
       ourStream.write(`[*][URL='https://forums.spacebattles.com/posts/35001643/']May 7th - May 14th 2017[/URL]\n`)
       ourStream.write(`[/LIST]`)
-      ourStream.write(`\n[spoiler="Concise list of updated fics: (click through above for a listing with more details and crosslinking)"]\n\n`)
-
+      ourStream.write(`\n[spoiler="Concise list of updated fics:"]\n`)
+      ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url]\n\n`)
       for (let type of qw`fic quest`) {
         if (!changes[type].new.length) continue
         ourStream.write(`[b][u]New ${ucfirst(type)}s[/u][/b]\n`)
