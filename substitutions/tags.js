@@ -6,11 +6,15 @@ module.exports = {
 // wormisms
   "Case 53": "http://worm.wikia.com/wiki/Case_53",
   "path to victory": "http://powerlisting.wikia.com/wiki/Path_to_Victory",
+  "ABB": "http://worm.wikia.com/wiki/ABB",
+  "E88": "http://worm.wikia.com/wiki/E88",
+  "Endbringers": "http://worm.wikia.com/wiki/Endbringers",
 
 // power clasifications
   "changer": "http://worm.wikia.com/wiki/Changer",
   "tinker": "http://worm.wikia.com/wiki/Tinker",
   "thinker": "http://worm.wikia.com/wiki/Thinker",
+  "trump": "http://worm.wikia.com/wiki/Trump",
 
 // other earths
   "gimel": "http://worm.wikia.com/wiki/Earths#Earth_Gimel",
@@ -31,4 +35,8 @@ module.exports = {
   "Mando": "https://www.urbandictionary.com/define.php?term=Mando",
   "planeswalker": "http://mtg.gamepedia.com/Planeswalker",
   "transhumanism": "https://en.wikipedia.org/wiki/Transhumanism",
+  "For Want of a Nail": "http://tvtropes.org/pmwiki/pmwiki.php/Main/ForWantOfANail",
+
+// other fandoms
+  "Jedi": "http://starwars.wikia.com/wiki/Jedi"
 }

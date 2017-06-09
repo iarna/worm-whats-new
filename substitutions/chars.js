@@ -6,6 +6,7 @@ this line is pretty arbitrary.  But at the very least, the terrible trio,
 the once and future undersiders and new wave all get this treatment.
 */
 module.exports = {
+// worm chars
   "Aegis": "http://worm.wikia.com/wiki/Aegis",
   "Alec": "http://worm.wikia.com/wiki/Regent",
   "Amy": "http://worm.wikia.com/wiki/Panacea",
@@ -20,6 +21,7 @@ module.exports = {
   "Emma": "http://worm.wikia.com/wiki/Emma_Barnes",
   "Jack Slash": "http://worm.wikia.com/wiki/Jack_Slash",
   "Krouse": "http://worm.wikia.com/wiki/Trickster",
+  "Labrynth": "http://worm.wikia.com/wiki/Labyrinth",
   "Leet": "http://worm.wikia.com/wiki/Leet",
   "Lisa": "http://worm.wikia.com/wiki/Tattletale",
   "Madison": "http://worm.wikia.com/wiki/Madison_Clements",
@@ -35,6 +37,11 @@ module.exports = {
   "Taylor": "http://worm.wikia.com/wiki/Taylor_Hebert",
   "Über": "http://worm.wikia.com/wiki/%C3%9Cber",
   "Velocity": "http://worm.wikia.com/wiki/Velocity",
+
+// xover chars
+  "Raven Branwen": "http://rwby.wikia.com/wiki/Raven_Branwen",
+  "Ruby Rose": "http://rwby.wikia.com/wiki/Ruby_Rose",
+  "Yawgmoth": "http://mtg.gamepedia.com/Yawgmoth",
 
   "OC": "http://tvtropes.org/pmwiki/pmwiki.php/Main/OriginalCharacter",
 }
