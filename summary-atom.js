@@ -46,7 +46,6 @@ module.exports.fromDates = (start, end) => {
   return ourStream
 }
 
-
 function inRange (date, start, end) {
  return start.isSameOrBefore(date) && end.isAfter(date)
 }
@@ -144,7 +143,7 @@ function printFic (ourStream, fic) {
        .map(t => tagify(t, tagLinks))
   const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
     .map(t => t.replace(/^freeform:/, ''))
-    .map(t => /altpower:/.test(t) ? tagify(tagify(tagify(t, charLinks), tagLinks), xoverLinks) : t)
+    .map(t => /altpower:/.test(t) ? tagify(t, Object.assign({}, charLinks, xoverLinks))  : t)
   summary.push(html`<b>Updated on:</b> ${chapterDate(fic.newChapters[fic.newChapters.length -1]).format('ddd [at] h a')} UTC`)
   if (genre.length !== 0) summary.push(html`<b>Genre:</b> ${genre.join(', ')}\n`)
   if (category.length !== 0) summary.push(`<b>Category:</b> ${strify(category, catLinks)}\n`)

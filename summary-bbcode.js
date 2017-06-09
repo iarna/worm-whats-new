@@ -53,6 +53,12 @@ function inRange (date, start, end) {
 function chapterDate (chap) {
   return moment(chap.modified || chap.created).utc()
 }
+function cmpDate (aa, bb) {
+  return aa > bb ? 1 : aa < bb ? -1 : 0
+}
+function cmpChapter (aa, bb) {
+  return cmpDate(chapterDate(aa), chapterDate(bb))
+}
 
 function printSummary (start, end, ourStream) {
   const changes = {
@@ -88,6 +94,8 @@ function printSummary (start, end, ourStream) {
         return
       }
       fic.oldChapters = fic.meta ? fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
+      fic.newChapters.sort(cmpChapter)
+      fic.oldChapters.sort(cmpChapter)
       const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
       const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).subtract(3, 'month')
       if (fic.tags.some(t => t === 'Snippets')) {

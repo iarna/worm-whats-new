@@ -54,6 +54,12 @@ function inRange (date, start, end) {
 function chapterDate (chap) {
   return moment(chap.modified || chap.created).utc()
 }
+function cmpDate (aa, bb) {
+  return aa > bb ? 1 : aa < bb ? -1 : 0
+}
+function cmpChapter (aa, bb) {
+  return cmpDate(chapterDate(aa), chapterDate(bb))
+}
 
 function printSummary (start, end, ourStream) {
   const changes = {
@@ -88,6 +94,8 @@ function printSummary (start, end, ourStream) {
         return
       }
       fic.oldChapters = fic.meta ? fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
+      fic.newChapters.sort(cmpChapter)
+      fic.oldChapters.sort(cmpChapter)
       const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
       const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).subtract(3, 'month')
       if (fic.tags.some(t => t === 'Snippets')) {
@@ -222,7 +230,8 @@ function printFic (ourStream, fic) {
        .map(t => tagify(t, tagLinks))
   const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
     .map(t => t.replace(/^freeform:/, ''))
-    .map(t => /altpower:/.test(t) ? tagify(tagify(tagify(t, charLinks), tagLinks), xoverLinks) : t)
+    .map(t => /altpower:/.test(t) ? tagify(t, Object.assign({}, charLinks, xoverLinks))  : t)
+
   ourStream.write(html`<br><b>Updated on:</b> ${chapterDate(fic.newChapters[fic.newChapters.length -1]).format('ddd [at] h a')} UTC`)
   if (genre.length !== 0) ourStream.write(html`<br><b>Genre:</b> ${genre.join(', ')}\n`)
   if (category.length !== 0) ourStream.write(`<br><b>Category:</b> ${strify(category, catLinks)}\n`)
