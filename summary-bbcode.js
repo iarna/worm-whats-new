@@ -194,7 +194,7 @@ function printSummary (start, end, ourStream) {
       for (let type of qw`fic quest`) {
         if (!changes[type].revived.length) continue
         ourStream.write(`[b][u]Revived ${ucfirst(type)}s[/u][/b]\n`)
-        ourStream.write(`[size=-1][i](last update was ≥ 3 months ago)[/i][/size]\n`)
+        ourStream.write(`[size=3][i](last update was ≥ 3 months ago)[/i][/size]\n`)
         ourStream.write('[list]')
         changes[type].revived.forEach(fic => printFic(ourStream, fic))
         ourStream.write('[/list]')
