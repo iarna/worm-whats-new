@@ -213,7 +213,7 @@ function printFic (ourStream, fic) {
   const author = authorurl ? html`<a href="${authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
-  ourStream.write(html`<b><a href="${firstUpdate.link}" title="${firstUpdate.name}">${fic.title}</a>${[follows]} (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
+  ourStream.write(html`<b><a href="${firstUpdate.link.trim()}" title="${firstUpdate.name}">${fic.title}</a>${[follows]} (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
   ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
   ourStream.write(html`<br><b>Total length:</b> <a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${cstr(chapters)}, ${approx(fic.words)} words</a>\n`)
   
