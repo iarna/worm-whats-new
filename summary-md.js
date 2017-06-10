@@ -154,6 +154,9 @@ function printSummary (start, end, ourStream) {
       ourStream.write(`* If you're technically inclined, you can find the source for the generator [over on github](https://github.com/iarna/worm-whats-new). I'm afraid the source is kinda garbage though. You can also find the giiiagantic JSON file I use as source material.\n`)
 
       ourStream.write(`\n**Previous weeks:**\n\n`)
+      ourStream.write(`* [Jun 3rd - June 9th](https://fics-for-the-fic-gods.tumblr.com/post/161640850493/new-and-updated-worm-fanfic-in-the-week-of)\n`)
+
+      ourStream.write(`* [Jun 3rd - June 9th](https://www.reddit.com/r/WormFanfic/comments/6gcp5b/new_and_updated_fanfic_in_the_week_of_2017jun03/)\n`)
       ourStream.write(`* [May 27th - June 2nd](https://www.reddit.com/r/WormFanfic/comments/6eyhv4/new_and_updated_fanfic_for_may_27th_to_june_2nd/)\n`)
       ourStream.write(`* [May 21st - May 26th](https://www.reddit.com/r/WormFanfic/comments/6dl1t5/fanfic_updates_for_may_21st_to_may_26th/)\n`)
       ourStream.write(`* [May 14th - May 21st 2017](https://www.reddit.com/r/WormFanfic/comments/6c5ywx/new_stories_for_the_week_of_may_14th_2017/)\n`)
