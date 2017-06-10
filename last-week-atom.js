@@ -6,8 +6,7 @@ const pivot = 6
 const week = -1
 
 const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
-start.week(start.week()-1)
-if (start.day() >= pivot) {
+if (start.day() < pivot) {
   start.week(start.week()-1)
 }
 start.day(pivot)
