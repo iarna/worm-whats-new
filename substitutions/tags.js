@@ -30,6 +30,8 @@ module.exports = {
   "SI": "http://tvtropes.org/pmwiki/pmwiki.php/Main/SelfInsertFic",
   "WAFF": "http://tvtropes.org/pmwiki/pmwiki.php/Main/WAFF",
   "CYOA": "https://www.reddit.com/r/makeyourchoice/",
+  "Hurt/Comfort": "http://tvtropes.org/pmwiki/pmwiki.php/Main/HurtComfortFic",
+  "magical girl": "http://tvtropes.org/pmwiki/pmwiki.php/Main/MagicalGirl",
 
 // possibly obscure terms
   "Mando": "https://www.urbandictionary.com/define.php?term=Mando",
