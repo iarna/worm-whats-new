@@ -18,8 +18,7 @@ function printFic (fic) {
   if (!fic.meta) console.log(fic)
   const authorurl = fic.authorurl || fic.meta.authorUrl
   if (!fic.meta.chapters) return console.log(fic)
-  console.log(`* [${fic.title}](${link}) by [${fic.authors}](${authorurl}) (${cstr(fic.meta.chapters.length)}, ${approx(fic.words)} words), last updated ${reldate(fic.updated)}: ${fic.tags.join(', ')}`)
-  if (fic.rec) console.log(`  <br>${fic.rec}`)
+  console.log(`* [${fic.title}](${shortlink(link)}) by [${fic.authors}](${shortlink(authorurl)}) (${cstr(fic.meta.chapters.length)}, ${approx(fic.words)} words), last updated ${reldate(fic.updated)}: ${fic.tags.join(', ')}`)
 }
 
 function reldate (date) {
