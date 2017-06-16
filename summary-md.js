@@ -18,6 +18,10 @@ const charLinks = require('./substitutions/chars.js')
 const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
+const {
+  shortlink, ucfirst, things, cstr, inRange, chapterDate, cmpChapter
+} = require('./summary-lib.js')((label, href) => `[${label}](${href})`)
+
 module.exports = (pivot, week) => {
   const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
   if (start.day() < pivot) {
@@ -44,20 +48,6 @@ module.exports.fromDates = (start, end) => {
 
   printSummary(start, end, ourStream)
   return ourStream
-}
-
-
-function inRange (date, start, end) {
- return start.isSameOrBefore(date) && end.isAfter(date)
-}
-function chapterDate (chap) {
-  return moment(chap.modified || chap.created).utc()
-}
-function cmpDate (aa, bb) {
-  return aa > bb ? 1 : aa < bb ? -1 : 0
-}
-function cmpChapter (aa, bb) {
-  return cmpDate(chapterDate(aa), chapterDate(bb))
 }
 
 function printSummary (start, end, ourStream) {
@@ -207,37 +197,4 @@ function printFic (ourStream, fic) {
   const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
   ourStream.write(`* [${fic.title}](${link}) - [${firstUpdate.name}](${firstUpdate.link}) by [${fic.authors}](${authorurl}) added ${cstr(newChapters)}, ${approx(newWords)} words\n`)
-}
-
-function things (num, thing) {
-  if (num === 1) {
-    return thing
-  } else {
-    return thing + 's'
-  }
-}
-function cstr (chapters, chapterPrefix) {
-  const pre = chapterPrefix ? `${chapterPrefix} ` : ''
-  if (chapters === 1) {
-    return `${chapters} ${pre}chapter`
-  } else {
-    return `${chapters} ${pre}chapters`
-  }
-}
-
-function strify (things, links) {
-  return linkUp(things, links).join(', ')
-}
-function tagify (thing, links) {
-  for (let link of Object.keys(links)) {
-    thing = thing.replace(new RegExp('\\b' + link + '\\b'), `<a href="${links[link]}">${link}</a>`)
-  }
-  return thing
-}
-function linkUp (things, links) {
-  return things.map(thing => tagify(thing, links))
-}
-
-function ucfirst (str) {
-  return str.slice(0,1).toUpperCase() + str.slice(1)
 }

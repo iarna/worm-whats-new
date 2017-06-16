@@ -18,6 +18,10 @@ const charLinks = require('./substitutions/chars.js')
 const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
+const {
+  shortlink, things, strify, tagify, cstr, inRange, chapterDate
+} = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
+
 module.exports = (pivot, week) => {
   const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
   if (start.day() < pivot) {
@@ -44,13 +48,6 @@ module.exports.fromDates = (start, end) => {
 
   printSummary(start, end, ourStream)
   return ourStream
-}
-
-function inRange (date, start, end) {
- return start.isSameOrBefore(date) && end.isAfter(date)
-}
-function chapterDate (chap) {
-  return moment(chap.modified || chap.created).utc()
 }
 
 function printSummary (start, end, ourStream) {
@@ -162,33 +159,12 @@ function printFic (ourStream, fic) {
     <id>${fic.identifiers.replace(/^ur[li]:/,'')}#${fic.meta.chapters.length}</id>
     <published>${moment(fic.meta.created || fic.pubate).toISOString()}</published>
     <updated>${moment(fic.meta.modified || fic.updated).toISOString()}</updated>
-    <link href="${firstUpdate.link}"/>
+    <link href="${shortlink(firstUpdate.link)}"/>
     <title>${fic.title} - ${firstUpdate.name}</title>
     <summary type="html">${summary.join('<br>\n')}</summary>
     <author>
       <name>${fic.authors}</name>
-      <uri>${authorurl}</uri>
+      <uri>${shortlink(authorurl)}</uri>
     </author>
   </entry>\n`)
-}
-
-function cstr (chapters) {
-  if (chapters === 1) {
-    return `${chapters} chapter`
-  } else {
-    return `${chapters} chapters`
-  }
-}
-
-function strify (things, links) {
-  return linkUp(things, links).join(', ')
-}
-function tagify (thing, links) {
-  for (let link of Object.keys(links)) {
-    thing = thing.replace(new RegExp('\\b' + link + '\\b'), `<a href="${links[link]}">${link}</a>`)
-  }
-  return thing
-}
-function linkUp (things, links) {
-  return things.map(thing => tagify(thing, links))
 }

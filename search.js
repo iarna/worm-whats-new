@@ -3,6 +3,9 @@ const fs = require('fs')
 const readFics = require('./read-fics.js')
 const approx = require('approximate-number');
 const moment = require('moment')
+
+const { shortlink } = require('./summary-lib.js')((label, href) => `[${label}](${href})`)
+
 readFics(`${__dirname}/Fanfic.json`)
   .filter(fic => fic.fandom === 'Worm')
   .filter(fic => fic.tags.some(t => new RegExp(process.argv.slice(2).join(' '), 'i').test(t)))

@@ -19,6 +19,11 @@ const charLinks = require('./substitutions/chars.js')
 const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
+const {
+  shortlink, things, strify, tagify, cstr, inRange, chapterDate, cmpChapter, ucfirst
+} = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
+
+
 module.exports = (pivot, week) => {
   const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
   if (start.day() < pivot) {
@@ -47,19 +52,6 @@ module.exports.fromDates = (start, end) => {
   return ourStream
 }
 
-
-function inRange (date, start, end) {
- return start.isSameOrBefore(date) && end.isAfter(date)
-}
-function chapterDate (chap) {
-  return moment(chap.modified || chap.created).utc()
-}
-function cmpDate (aa, bb) {
-  return aa > bb ? 1 : aa < bb ? -1 : 0
-}
-function cmpChapter (aa, bb) {
-  return cmpDate(chapterDate(aa), chapterDate(bb))
-}
 
 function printSummary (start, end, ourStream) {
   const changes = {
@@ -246,37 +238,4 @@ function printFic (ourStream, fic) {
   if (rating.length) ourStream.write(html`<br><b>Rating:</b> ${rating}\n`)
   if (fic.rec != '' && fic.rec != null) ourStream.write(`<br><b>Summary:</b><br>${fic.rec}\n`)
   ourStream.write('</article>\n')
-}
-
-function things (num, thing) {
-  if (num === 1) {
-    return thing
-  } else {
-    return thing + 's'
-  }
-}
-function cstr (chapters, chapterPrefix) {
-  const pre = chapterPrefix ? `${chapterPrefix} ` : ''
-  if (chapters === 1) {
-    return `${chapters} ${pre}chapter`
-  } else {
-    return `${chapters} ${pre}chapters`
-  }
-}
-
-function strify (things, links) {
-  return linkUp(things, links).join(', ')
-}
-function tagify (thing, links) {
-  for (let link of Object.keys(links)) {
-    thing = thing.replace(new RegExp('\\b' + link + '\\b'), `<a href="${links[link]}">${link}</a>`)
-  }
-  return thing
-}
-function linkUp (things, links) {
-  return things.map(thing => tagify(thing, links))
-}
-
-function ucfirst (str) {
-  return str.slice(0,1).toUpperCase() + str.slice(1)
 }
