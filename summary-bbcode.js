@@ -11,6 +11,7 @@ const MiniPass = require('minipass')
 const writtenNumber = require('written-number')
 const qw = require('qw')
 const titleSort = require('./title-sort.js')
+const notesAndFAQ = require('./notes-and-faq.js')
 
 const xoverLinks = require('./substitutions/xover.js')
 const ficLinks = require('./substitutions/fics.js')
@@ -134,18 +135,12 @@ function printSummary (start, end, ourStream) {
       }
       ourStream.write(`[url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url]\n\n`)
 
-      ourStream.write(`Notes and FAQ:\n\n`)
-      ourStream.write(`[list]\n`)
-      ourStream.write(`[*] New to the fandom? "Quests" are little interactive games between the author and the readers where the readers vote on how the story progresses. While they're probably best enjoyed by participating they can often be solid stories unto themselves.\n`)
-      ourStream.write(`[*] Relatedly, [url=https://www.reddit.com/r/makeyourchoice/]"CYOA"[/url]s are little guides to setting, theme and character creation often used by folks writing SIs.\n`)
-      ourStream.write(`[*] The word counts and chapter counts often (usually) include omake, so keep that in mind.\n`)
-      ourStream.write(`[*] Days in the range are inclusive, so ALL of each day. Start and end of days are in UTC. So if you're posting on Friday evenings in the US you'll be in the next week's listing.\n`)
-      ourStream.write(`[*] I might have missed you, especially if your fic was new or returning from a long hiatus. I mean, I really hope not? But possibly! My methods aren't perfect. If I did, please let me know and I'll make sure you get picked up in the future!\n`)
-      ourStream.write(`[*] I pick up oneshots from personal oneshot/snippet threads, but not from the global one. (No threadmarks!) So if you want your oneshots included, start up your own personal thread to archive them.\n`)
-      ourStream.write(`[*] I do an early draft of this over on the [url=https://www.reddit.com/r/Cauldron]Cauldron Discord[/url] on Thursday evenings or Friday mornings (PDT). If you want to help out, joining and providing feedback then would be awesome!\n`)
-      ourStream.write(`[*] There's an [url=https://shared.by.re-becca.org/misc/worm/this-week.xml]RSS[/url] feed, if you're inclined that way.\n`)
-      ourStream.write(`[*] If you're technically inclined, you can find the source for the generator [url=https://github.com/iarna/worm-whats-new]over on github[/url]. I'm afraid the source is kinda garbage though. You can also find the giiiagantic JSON file I use as source material.\n`)
-      ourStream.write(`[/list]\n`)
+      ourStream.write(notesAndFAQ(
+        (href, link) => `[${link}](${href})`,
+        () => '[list]', () => '[/list]', () => '[*]',
+        () => '[list=1]', () => '[/list]', () => '[*]'
+      ))
+
       ourStream.write(`\nPrevious weeks:\n\n`)
       ourStream.write(`[LIST]\n`)
       ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8639589/']May 27th - June 2nd[/URL]\n`)

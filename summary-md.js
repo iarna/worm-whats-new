@@ -11,6 +11,7 @@ const MiniPass = require('minipass')
 const writtenNumber = require('written-number')
 const qw = require('qw')
 const titleSort = require('./title-sort.js')
+const notesAndFAQ = require('./notes-and-faq.js')
 
 const xoverLinks = require('./substitutions/xover.js')
 const ficLinks = require('./substitutions/fics.js')
@@ -130,18 +131,14 @@ function printSummary (start, end, ourStream) {
           ourStream.write(`We also saw ${updatestr}.\n\n`)
         }
       }
+
       ourStream.write(`[Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
-      ourStream.write(`Notes and FAQ:\n\n`)
-      ourStream.write(`* New to the fandom? "Quests" are little interactive games between the author and the readers where the readers vote on how the story progresses. While they're probably best enjoyed by participating they can often be solid stories unto themselves.\n`)
-      ourStream.write(`* Relatedly, ["CYOA"](https://www.reddit.com/r/makeyourchoice/)s are little guides to setting, theme and character creation often used by folks writing SIs.\n`)
-      ourStream.write(`* The word counts and chapter counts often (usually) include omake, so keep that in mind.\n`)
-      ourStream.write(`* Days in the range are inclusive, so ALL of each day. Start and end of days are in UTC. So if you're posting on Friday evenings in the US you'll be in the next week's listing.\n`)
-      ourStream.write(`* I might have missed you, especially if your fic was new or returning from a long hiatus. I mean, I really hope not? But possibly! My methods aren't perfect. If I did, please let me know and I'll make sure you get picked up in the future!\n`)
-      ourStream.write(`* I pick up oneshots from personal oneshot/snippet threads, but not from the global one. (No threadmarks!) So if you want your oneshots included, start up your own personal thread to archive them.\n`)
-      ourStream.write(`* I do an early draft of this over on the [Cauldron Discord](https://www.reddit.com/r/Cauldron) on Thursday evenings or Friday mornings (PDT). If you want to help out, joining and providing feedback then would be awesome!\n`)
-      ourStream.write(`* There's an [RSS](https://shared.by.re-becca.org/misc/worm/this-week.xml) feed, if you're inclined that way.\n`)
-      ourStream.write(`* If you're technically inclined, you can find the source for the generator [over on github](https://github.com/iarna/worm-whats-new). I'm afraid the source is kinda garbage though. You can also find the giiiagantic JSON file I use as source material.\n`)
+      ourStream.write(notesAndFAQ(
+        (href, link) => `[${link}](${href})`,
+        () => '', () => '', () => '*',
+        () => '', () => '', () => '1.'
+      ))
 
       ourStream.write(`\n**Previous weeks:**\n\n`)
       ourStream.write(`* [Jun 3rd - June 9th](https://fics-for-the-fic-gods.tumblr.com/post/161640850493/new-and-updated-worm-fanfic-in-the-week-of)\n`)
