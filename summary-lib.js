@@ -9,6 +9,9 @@ module.exports = function (makeLink) {
                .replace(/[/]threads[/](?:[^.]+[.])?(\d+)[/]?/, '/threads/$1')
                .replace(/[/]members[/](?:[^.]+[.])?(\d+)[/]?/, '/members/$1')
                .replace(/[/]works[/](\d+)[/]chapters[/]\d+[/]?$/, '/works/$1')
+               .replace(/forum.question/, 'question')
+               .replace(/[/]fanfiction[.]net/, '/www.fiction.net')
+               .replace(/[/]$/, '')
                .replace(/[/]s[/](\d+)[/].*/, '/s/$1')
   }
   exports.ucfirst = ucfirst
