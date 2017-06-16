@@ -125,7 +125,7 @@ function printFic (ourStream, fic) {
   }
   summary.push(html`<b>Status:</b> ${fic.status}`)
   summary.push(html`<b>Added:</b> ${cstr(newChapters)}, ${approx(newWords)} words`)
-  summary.push(html`<b>Total length:</b> <a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${cstr(chapters)}, ${approx(fic.words)} words</a>`)
+  summary.push(html`<b>Total length:</b> <a href="${shortlink(fic.identifiers.replace(/^ur[li]:/,''))}">${cstr(chapters)}, ${approx(fic.words)} words</a>`)
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   const xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))

@@ -202,12 +202,12 @@ function printFic (ourStream, fic) {
   const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
 
   const authorurl = fic.authorurl || fic.meta.authorUrl
-  const author = authorurl ? html`<a href="${authorurl}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
+  const author = authorurl ? html`<a href="${shortlink(authorurl)}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
-  ourStream.write(html`<b><a href="${firstUpdate.link.trim()}" title="${firstUpdate.name}">${fic.title}</a>${[follows]} (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
+  ourStream.write(html`<b><a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a>${[follows]} (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
   ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
-  ourStream.write(html`<br><b>Total length:</b> <a href="${fic.identifiers.replace(/^ur[li]:/,'\n')}">${cstr(chapters)}, ${approx(fic.words)} words</a>\n`)
+  ourStream.write(html`<br><b>Total length:</b> <a href="${shortlink(fic.identifiers.replace(/^ur[li]:/,''))}">${cstr(chapters)}, ${approx(fic.words)} words</a>\n`)
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   const xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))

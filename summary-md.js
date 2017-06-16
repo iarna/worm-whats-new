@@ -196,5 +196,9 @@ function printFic (ourStream, fic) {
   const newChapters = fic.newChapters.length
   const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
-  ourStream.write(`* [${fic.title}](${link}) - [${firstUpdate.name}](${firstUpdate.link}) by [${fic.authors}](${authorurl}) added ${cstr(newChapters)}, ${approx(newWords)} words\n`)
+  ourStream.write(`* [${fic.title}](${link})`)
+  if (fic.oldChapters.length) {
+    ourStream.write(` - [${firstUpdate.name}](${firstUpdate.link})`)
+  }
+  ourStream.write(` by ${fic.authors} added ${cstr(newChapters)}, ${approx(newWords)} words\n`)
 }
