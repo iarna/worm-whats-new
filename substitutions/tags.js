@@ -9,6 +9,7 @@ module.exports = {
   "ABB": "http://worm.wikia.com/wiki/ABB",
   "E88": "http://worm.wikia.com/wiki/E88",
   "Endbringers": "http://worm.wikia.com/wiki/Endbringers",
+  "Endbringer": "http://worm.wikia.com/wiki/Endbringers",
 
 // power clasifications
   "changer": "http://worm.wikia.com/wiki/Changer",
