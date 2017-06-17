@@ -8,21 +8,23 @@ ${cul()}
 
 Most active fics!
 ${ol()}
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/taylor-varga-worm-luna-varga.32119/', 'Taylor Varga')} (223 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/completely-unoriginal-there-are-no-bad-premises-only-bad-executions.526825/', 'Completely Unoriginal :: There Are No Bad Premises, Only Bad Executions')} (210 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/reincarnation-of-an-angel-worm-quest.532675/', 'Reincarnation of an Angel')} (185 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/worm-wh40k-formerly-known-as-aquilla.521560/', 'Formerly Known as Aquilla')} (179 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} (175 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/worm-respun-a-peggy-sue-story.523987/', 'Worm Respun: A Peggy Sue Story')} (165 boops)
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/all-things-devoured-worm-deadspace.35750/', 'All Things Devoured')} (141 boops)
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/an-essence-of-silver-and-steel-worm-fate-stay-night.39043/', 'An Essence of Silver and Steel')} (130 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/deputy-commander-worm-au-sequel.518383/', 'Deputy Commander')} (130 boops)
-${oli()} ${ahref('https://forums.spacebattles.com/threads/constellations-worm-okami.414320/', 'Constellations')} (125 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/completely-unoriginal-there-are-no-bad-premises-only-bad-executions.526825/', 'Completely Unoriginal :: There Are No Bad Premises, Only Bad Executions')} (284 boops)
+${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/taylor-varga-worm-luna-varga.32119/', 'Taylor Varga')} (265 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/reincarnation-of-an-angel-worm-quest.532675/', 'Reincarnation of an Angel')} (223 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} (209 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/worm-wh40k-formerly-known-as-aquilla.521560/', 'Formerly Known as Aquilla')} (201 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/worm-respun-a-peggy-sue-story.523987/', 'Worm Respun: A Peggy Sue Story')} (180 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/like-a-worm-from-a-bird-a-taylor-as-an-aburame-quest.527911/', 'Like a Worm from a Bird')} (142 boops)
+${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/all-things-devoured-worm-deadspace.35750/', 'All Things Devoured')} (142 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/emissary-a-deputy-recursive-crossover-worm-au-canon.532150/', 'Emissary - A Deputy Recursive Crossover')} (142 boops)
+${oli()} ${ahref('https://forums.spacebattles.com/threads/deputy-commander-worm-au-sequel.518383/', 'Deputy Commander')} (139 boops)
 ${col()}
 
 Notes and FAQ
 ${ul()}
-${li()} What's a boop? It means the fic saw some amount of activity during one of my software's scan periods. Currently this is seven and half minutes. So one could say that the Taylor Varga thread was continuously active for one day, three hours and fifty-two minutes this week. Whew, that's a lot!
+${li()} "What's a boop?" It means the fic saw some amount of activity during one of my software's scan periods. Currently this is seven and half minutes. So one could say that the Taylor Varga thread was continuously active for one day, three hours and fifty-two minutes this week. Whew, that's a lot!
+${li()} "But that one has too many boops! It couldn't have been that active!" Well, keep in mind, these numbers are aggregated across all of the sources I scan: SB, SV, QQ, AO3 and FFNET.
+${li()} "But they have too few boops! I know it was more active than that!" Hah, well, mostly my software scans ever seven and half minutes. Except it's still running on my laptop, so not when I'm commuting or a handful of other occasions.
 ${li()} New to the fandom? "Quests" are little interactive games between the author and the readers where the readers vote on how the story progresses. While they're probably best enjoyed by participating they can often be solid stories unto themselves.
 ${li()} Relatedly, ${ahref(`https://www.reddit.com/r/makeyourchoice/`, `"CYOA"`)}s are little guides to setting, theme and character creation often used by folks writing SIs.
 ${li()} The word counts and chapter counts often (usually) include omake, so keep that in mind.
