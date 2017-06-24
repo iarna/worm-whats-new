@@ -14,10 +14,13 @@ readFics(`${__dirname}/Fanfic.json`)
   .forEach(printFic)
 
 function printFic (fic) {
-  const link = fic.identifiers.replace(/^ur[li]:/,'')
+  const link = fic.identifiers.split(',').filter(i => /^ur[li]/.test(i))[0].replace(/^ur[li]:/,'')
   if (!fic.meta) console.log(fic)
   const authorurl = fic.authorurl || fic.meta.authorUrl
   if (!fic.meta.chapters) return console.log(fic)
+  if (fic.tags.some(t => t === 'Snippets')) {
+    fic.title = fic.title.replace(/^[^:]+: /i, '')
+  }
   console.log(`* [${fic.title}](${shortlink(link)}) by [${fic.authors}](${shortlink(authorurl)}) (${cstr(fic.meta.chapters.length)}, ${approx(fic.words)} words), last updated ${reldate(fic.updated)}: ${fic.tags.join(', ')}`)
 }
 
