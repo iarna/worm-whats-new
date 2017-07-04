@@ -6,9 +6,11 @@ const moment = require('moment')
 
 const { shortlink } = require('./summary-lib.js')((label, href) => `[${label}](${href})`)
 
+const search = new RegExp(process.argv.slice(2).join(' '), 'i')
+
 readFics(`${__dirname}/Fanfic.json`)
   .filter(fic => fic.fandom === 'Worm')
-  .filter(fic => fic.tags.some(t => new RegExp(process.argv.slice(2).join(' '), 'i').test(t)))
+  .filter(fic => search.test(fic.title) || fic.tags.some(t => search.test(t)))
   .sort((a, b) => moment(a.updated).isAfter(b.updated) ? -1 : moment(a.updated).isBefore(b.updated) ? 1 : 0)
 //  .sort((a, b) => b.words - a.words)
   .forEach(printFic)
