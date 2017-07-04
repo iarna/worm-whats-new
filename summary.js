@@ -98,8 +98,10 @@ function printSummary (start, end, ourStream) {
       } else if (fic.status === 'one-shot') {
         bucket(fic).oneshot.push(fic)
       } else if (start.isSameOrBefore(fic.pubdate)) {
+        fic.status = 'new'
         bucket(fic).new.push(fic)
       } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
+        fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
         bucket(fic).updated.push(fic)
@@ -205,7 +207,10 @@ function printFic (ourStream, fic) {
   const author = authorurl ? html`<a href="${shortlink(authorurl)}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
-  ourStream.write(html`<b><a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a>${[follows]} (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
+  ourStream.write(html`<b><a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a>${[follows]}`)
+  if (fic.status !== 'one-shot' && fic.status !== 'new') {
+    ourStream.write(html` (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
+  }
   ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
   ourStream.write(html`<br><b>Total length:</b> <a href="${shortlink(fic.identifiers.replace(/^ur[li]:/,''))}">${cstr(chapters)}, ${approx(fic.words)} words</a>\n`)
   

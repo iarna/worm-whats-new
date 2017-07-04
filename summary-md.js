@@ -97,8 +97,10 @@ function printSummary (start, end, ourStream) {
       } else if (fic.status === 'one-shot') {
         bucket(fic).oneshot.push(fic)
       } else if (start.isSameOrBefore(fic.pubdate)) {
+        fic.status = 'new'
         bucket(fic).new.push(fic)
       } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
+        fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
         bucket(fic).updated.push(fic)
@@ -197,5 +199,9 @@ function printFic (ourStream, fic) {
   if (fic.oldChapters.length) {
     ourStream.write(` - [${firstUpdate.name}](${firstUpdate.link})`)
   }
-  ourStream.write(` by ${fic.authors} added ${cstr(newChapters)}, ${approx(newWords)} words\n`)
+  ourStream.write(` by ${fic.authors}`)
+  if (fic.status !== 'one-shot' && fic.status !== 'new') {
+    ourStream.write(` added ${cstr(newChapters)}, ${approx(newWords)} words`)
+  }
+  ourStream.write(`\n`)
 }
