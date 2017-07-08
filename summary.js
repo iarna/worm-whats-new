@@ -227,7 +227,7 @@ function printFic (ourStream, fic) {
        .map(t => tagify(t, tagLinks))
   const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
     .map(t => t.replace(/^freeform:/, ''))
-    .map(t => /altpower:/.test(t) ? tagify(t, Object.assign({}, charLinks, xoverLinks))  : t)
+    .map(t => /altpower:/.test(t) ? tagify(t, Object.assign({}, xoverLinks))  : t)
 
   ourStream.write(html`<br><b>Updated on:</b> ${chapterDate(fic.newChapters[fic.newChapters.length -1]).format('ddd [at] h a')} UTC`)
   if (genre.length !== 0) ourStream.write(html`<br><b>Genre:</b> ${genre.join(', ')}\n`)
@@ -235,7 +235,7 @@ function printFic (ourStream, fic) {
   if (xover.length !== 0) ourStream.write(`<br><b>Crossover:</b> ${strify(xover, xoverLinks)}\n`)
   if (fusion.length !== 0) ourStream.write(`<br><b>Fusion:</b> ${strify(fusion, xoverLinks)}\n`)
   if (meta.length !== 0) ourStream.write(`<br><b>Meta-fanfiction of:</b> ${strify(meta, ficLinks)}\n`)
-  if (tags.length !== 0) ourStream.write(`<br><b>Tags:</b> ${strify(tags, tagLinks)}\n`)
+  if (tags.length !== 0) ourStream.write(`<br><b>Tags:</b> ${strify(tags, Object.assign({}, tagLinks, charLinks))}\n`)
   if (fic.pov != '' && fic.pov != null) ourStream.write(`<br><b>POV:</b> ${strify(fic.pov.split(/, /), charLinks)}\n`)
   if (fic.otn != '' && fic.otn != null) ourStream.write(`<br><b>Romantic pairing:</b> ${strify(fic.otn.split(', '), charLinks)}\n`)
   if (fic.ftn != '' && fic.ftn != null) ourStream.write(`<br><b>Friendship pairing:</b> ${strify(fic.ftn.split(', '), charLinks)}\n`)
