@@ -81,7 +81,7 @@ function printSummary (start, end, ourStream) {
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .sort(titleSort(fic => fic.title))
     .forEach(fic => {
-      fic.newChapters = fic.meta ? fic.meta.chapters.filter(chap => inRange(chapterDate(chap), start, end)) : []
+      fic.newChapters = fic.meta ? fic.meta.chapters.filter(chap => /staff/i.test(chap.type) && inRange(chapterDate(chap), start, end)) : []
       if (!fic.newChapters.length) {
         console.error('No new chapters, skipping:', fic.title)
         return
