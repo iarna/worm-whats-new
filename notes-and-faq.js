@@ -1,6 +1,11 @@
 'use strict'
 module.exports = (ahref, ul, cul, li, ol, col, oli) => {
   return `Most active fics!
+
+Hey you all… so this list is kinda even less meaningful than usual because, um, I kind of turned off my data collector for a few days by mistake.  But it's also been getting kinda samey so I'm gonna find something else to put here next week.  I alllmost made this be "fics Iarna read this week" but then it'd be like three things plus a bunch of Twilight femslash.  =p
+
+I've got a buncha new infrastructure cooking up now that'll open up the opportunity for some neat stuff in the future, like combined view counts across sites.  Also it shooould make this a bit less work, which'd be nice 'cause this takes a couple hours to put together each week.
+
 ${ol()}
 ${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} by ${ahref('https://forums.spacebattles.com/members/lithosmaitreya.330791/', 'LithosMaitreya')} (53 chapters, 57k words), 244 boops
 ${oli()} ${ahref('https://forums.spacebattles.com/threads/deputy-commander-worm-au-sequel.518383/', 'Deputy Commander')} by ${ahref('https://forums.spacebattles.com/members/reyemile.79899/', 'Reyemile')} (26 chapters, 88k words), 200 boops
