@@ -2,16 +2,16 @@
 module.exports = (ahref, ul, cul, li, ol, col, oli) => {
   return `Most active fics!
 ${ol()}
-${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} by ${ahref('https://forums.spacebattles.com/members/lithosmaitreya.330791/', 'LithosMaitreya')} (53 chapters, 57k words), 441 boops
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/taylor-varga-worm-luna-varga.32119/', 'Taylor Varga')} by ${ahref('https://forums.sufficientvelocity.com/members/mp3-1415player.14570/', 'mp3.1415player')} (251 chapters, 1.2m words), 337 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/emissary-a-deputy-recursive-crossover-worm-au-canon.532150/', 'Emissary - A Deputy Recursive Crossover')} by ${ahref('https://forums.spacebattles.com/members/noelemahc.285845/', 'Noelemahc')} (25 chapters, 54k words), 303 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/well-traveled-worm-planeswalker-taylor.377626/', 'Well Traveled')} by ${ahref('https://forums.spacebattles.com/members/argentorum.313567/', 'Argentorum')} (29 chapters, 64k words), 286 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/537310', 'Fear')} by ${ahref('https://forums.spacebattles.com/members/ryuugi.32789/', 'Ryuugi')} (7 chapters, 14k words), 223 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/constellations-worm-okami.414320/', 'Constellations')} by ${ahref('https://forums.spacebattles.com/members/unwelcomestorm.311050/', 'UnwelcomeStorm')} (46 chapters, 141k words), 180 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/540244', 'Auf Wiedersehen')} by ${ahref('https://forums.spacebattles.com/members/nocton.349894/', 'Nocton')} (22 chapters, 19k words), 175 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/reincarnation-of-an-angel-worm-quest.532675/', 'Reincarnation of an Angel')} by ${ahref('https://forums.spacebattles.com/members/crimson-square.320536/', 'Crimson Square')} (43 chapters, 97k words), 154 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/526825/', 'Completely Unoriginal')} by ${ahref('https://forums.spacebattles.com/members/themanwhowas.315311/', 'themanwhowas')} (73 chapters, 87k words), 148 boops
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/magical-girl-escalation-taylor-worm-nanoha.28074/', 'Magical Girl Escalation Taylor')} by ${ahref('https://forums.sufficientvelocity.com/members/silently-watches.7954/', 'Silently Watches')} (85 chapters, 173k words), 144 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} by ${ahref('https://forums.spacebattles.com/members/lithosmaitreya.330791/', 'LithosMaitreya')} (53 chapters, 57k words), 244 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/deputy-commander-worm-au-sequel.518383/', 'Deputy Commander')} by ${ahref('https://forums.spacebattles.com/members/reyemile.79899/', 'Reyemile')} (26 chapters, 88k words), 200 boops
+${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/taylor-varga-worm-luna-varga.32119/', 'Taylor Varga')} by ${ahref('https://forums.sufficientvelocity.com/members/mp3-1415player.14570/', 'mp3.1415player')} (257 chapters, 1.2m words), 182 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/well-traveled-worm-planeswalker-taylor.377626/', 'Well Traveled')} by ${ahref('https://forums.spacebattles.com/members/argentorum.313567/', 'Argentorum')} (33 chapters, 70k words), 171 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/541966', 'Oni's Endless Dance Party')} by ${ahref('https://forums.spacebattles.com/members/dingbat779.320828/', 'dingbat779')} (14 chapters, 23k words), 171 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/screw-the-rules-i-have-escalation-worm-yugioh.437215/', 'Screw the Rules, I have Escalation!')} by ${ahref('https://forums.spacebattles.com/members/stewart92.316597/', 'Stewart92')} (32 chapters, 84k words), 142 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/to-reign-in-heaven-quest-worm-30k.470213/', 'To Reign in Heaven')} by ${ahref('https://forums.spacebattles.com/members/cyrileom.317540/', 'cyrileom')} (163 chapters, 251k words), 133 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/nike-worm-altpower.448553/', 'Nike')} by ${ahref('https://forums.spacebattles.com/members/hopeful-penguin.310834/', 'Hopeful Penguin')} (57 chapters, 66k words), 126 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/reincarnation-of-an-angel-worm-quest.532675/', 'Reincarnation of an Angel')} by ${ahref('https://forums.spacebattles.com/members/crimson-square.320536/', 'Crimson Square')} (51 chapters, 147k words), 124 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/emissary-a-deputy-recursive-crossover-worm-au-canon.532150/', 'Emissary - A Deputy Recursive Crossover')} by ${ahref('https://forums.spacebattles.com/members/noelemahc.285845/', 'Noelemahc')} (31 chapters, 65k words), 123 boops
 ${col()}
 
 Notes and FAQ
