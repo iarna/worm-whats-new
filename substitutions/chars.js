@@ -14,6 +14,7 @@ module.exports = {
   "Bohu": "http://worm.wikia.com/wiki/Bohu",
   "Cherie": "http://worm.wikia.com/wiki/Cherish",
   "Chris": "http://worm.wikia.com/wiki/Kid_Win",
+  "Coil": "http://worm.wikia.com/wiki/Coil",
   "Contessa": "http://worm.wikia.com/wiki/Contessa",
   "Damsel of Distress": "http://worm.wikia.com/wiki/Damsel_of_Distress",
   "Danny": "http://worm.wikia.com/wiki/Danny_Hebert",
@@ -23,6 +24,7 @@ module.exports = {
   "Elle": "http://worm.wikia.com/wiki/Labyrinth",
   "Emma": "http://worm.wikia.com/wiki/Emma_Barnes",
   "Glaistig Uaine": "http://worm.wikia.com/wiki/Glaistig_Uaine",
+  "Greg": "http://worm.wikia.com/wiki/Greg_Veder",
   "Jack Slash": "http://worm.wikia.com/wiki/Jack_Slash",
   "Jessica Yamada": "http://worm.wikia.com/wiki/Jessica_Yamada",
   "Krouse": "http://worm.wikia.com/wiki/Trickster",
@@ -42,6 +44,7 @@ module.exports = {
   "Saint": "http://worm.wikia.com/wiki/Saint",
   "Shatterbird": "http://worm.wikia.com/wiki/Shatterbird",
   "Simurgh": "http://worm.wikia.com/wiki/The_Simurgh",
+  "Sophia Hess": "http://worm.wikia.com/wiki/Shadow_Stalker",
   "Sophia": "http://worm.wikia.com/wiki/Shadow_Stalker",
   "Taylor": "http://worm.wikia.com/wiki/Taylor_Hebert",
   "Tohu": "http://worm.wikia.com/wiki/Tohu",
@@ -53,6 +56,8 @@ module.exports = {
   "Raven Branwen": "http://rwby.wikia.com/wiki/Raven_Branwen",
   "Ruby Rose": "http://rwby.wikia.com/wiki/Ruby_Rose",
   "Yawgmoth": "http://mtg.gamepedia.com/Yawgmoth",
+  "Cú Chulainn": "https://en.wikipedia.org/wiki/C%C3%BA_Chulainn",
+  "Millenium Earl": "https://en.wikipedia.org/wiki/Millennium_Earl",
 
   "OC": "http://tvtropes.org/pmwiki/pmwiki.php/Main/OriginalCharacter",
 }
