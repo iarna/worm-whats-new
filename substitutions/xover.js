@@ -103,6 +103,7 @@ module.exports = {
   "Naruto": "https://en.wikipedia.org/wiki/Naruto",
   "Okami": "https://en.wikipedia.org/wiki/%C5%8Ckami",
   "One Piece": "https://en.wikipedia.org/wiki/One_Piece",
+  "OneShot": "http://tvtropes.org/pmwiki/pmwiki.php/VideoGame/Oneshot",
   "Overwatch": "https://en.wikipedia.org/wiki/Overwatch_(video_game)",
   "Pathfinder": "https://en.wikipedia.org/wiki/Pathfinder_Roleplaying_Game",
   "Persona": "https://en.wikipedia.org/wiki/Persona_(series)",
