@@ -8,10 +8,12 @@ the once and future undersiders and new wave all get this treatment.
 module.exports = {
 // worm chars
   "Aegis": "http://worm.wikia.com/wiki/Aegis",
+  "Alabaster": "http://worm.wikia.com/wiki/Alabaster",
   "Alec": "http://worm.wikia.com/wiki/Regent",
   "Amy": "http://worm.wikia.com/wiki/Panacea",
   "Armsmaster": "http://worm.wikia.com/wiki/Armsmaster",
   "Bohu": "http://worm.wikia.com/wiki/Bohu",
+  "Brian": "http://worm.wikia.com/wiki/Grue",
   "Cherie": "http://worm.wikia.com/wiki/Cherish",
   "Chris": "http://worm.wikia.com/wiki/Kid_Win",
   "Coil": "http://worm.wikia.com/wiki/Coil",
@@ -44,14 +46,18 @@ module.exports = {
   "Saint": "http://worm.wikia.com/wiki/Saint",
   "Shatterbird": "http://worm.wikia.com/wiki/Shatterbird",
   "Simurgh": "http://worm.wikia.com/wiki/The_Simurgh",
+  "Skidmark": "http://worm.wikia.com/wiki/Skidmark",
   "Sophia Hess": "http://worm.wikia.com/wiki/Shadow_Stalker",
   "Sophia": "http://worm.wikia.com/wiki/Shadow_Stalker",
+  "Squealer": "http://worm.wikia.com/wiki/Squealer",
   "Taylor": "http://worm.wikia.com/wiki/Taylor_Hebert",
+  "Theo": "http://worm.wikia.com/wiki/Golem",
   "Tohu": "http://worm.wikia.com/wiki/Tohu",
   "Über": "http://worm.wikia.com/wiki/%C3%9Cber",
   "Velocity": "http://worm.wikia.com/wiki/Velocity",
 
 // xover chars
+  "Luthor": "https://en.wikipedia.org/wiki/Lex_Luthor",
   "Marvel!Odin": "https://marvel.com/universe/Odin",
   "Raven Branwen": "http://rwby.wikia.com/wiki/Raven_Branwen",
   "Ruby Rose": "http://rwby.wikia.com/wiki/Ruby_Rose",
