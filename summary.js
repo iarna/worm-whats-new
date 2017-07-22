@@ -199,7 +199,7 @@ function printSummary (start, end, ourStream) {
 }
 
 function printFic (ourStream, fic) {
-  const chapters = fic.meta.chapters.length
+  const chapters = fic.meta.chapters.filter(ch => !ch.type || ch.type === 'chapter').length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
   const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
