@@ -151,6 +151,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write(`* [June 10th - June 16th](https://fics-for-the-fic-gods.tumblr.com/post/161913592133/new-and-updated-fanfic-in-the-week-of-2017-jun-10)\n`)
       ourStream.write(`* [June 3rd - June 9th](https://fics-for-the-fic-gods.tumblr.com/post/161640850493/new-and-updated-worm-fanfic-in-the-week-of)\n`)
 
+      ourStream.write(`* [July 8th - July 14th](https://www.reddit.com/r/WormFanfic/comments/6ne9an/new_and_updated_fanfic_in_the_week_of_2017jul08/)\n`)
       ourStream.write(`* [July 1st - July 7th](https://www.reddit.com/r/WormFanfic/comments/6lyrxl/new_and_updated_fanfic_in_the_week_of_2017jul01/)\n`)
       ourStream.write(`* [June 24th - June 30th](https://www.reddit.com/r/WormFanfic/comments/6klh09/new_and_updated_fanfic_in_the_week_of_2017jun24/)\n`)
       ourStream.write(`* [June 17th - June 23rd](https://www.reddit.com/r/WormFanfic/comments/6j5ua9/new_and_updated_fanfic_in_the_week_of_2017jun17/)\n`)
