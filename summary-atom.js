@@ -82,7 +82,8 @@ function printSummary (start, end, ourStream) {
 
   return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
-    .filter(fic => inRange(fic.meta ? fic.meta.modified : fic.updated, start, end))
+    .filter(fic => (fic.meta && fic.meta.modified) || fic.updated)
+    .filter(fic => inRange((fic.meta && fic.meta.modified) || fic.updated, start, end))
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .sort((a, b) => moment(a.updated).isAfter(b.updated) ? 1 : moment(a.updated).isBefore(b.updated) ? -1 : 0)
     .forEach(fic => {
