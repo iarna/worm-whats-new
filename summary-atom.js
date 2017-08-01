@@ -46,7 +46,7 @@ module.exports = (pivot, week) => {
 module.exports.fromDates = (start, end) => {
   const ourStream = new MiniPass()
 
-  printSummary(start, end, ourStream)
+  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
   return ourStream
 }
 
