@@ -6,12 +6,15 @@ this line is pretty arbitrary.  But at the very least, the terrible trio,
 the once and future undersiders and new wave all get this treatment.
 */
 module.exports = {
+  "Night Gaunt": "https://en.wikipedia.org/wiki/Nightgaunt",
+
 // worm chars
   "Aegis": "http://worm.wikia.com/wiki/Aegis",
   "Alabaster": "http://worm.wikia.com/wiki/Alabaster",
   "Alec": "http://worm.wikia.com/wiki/Regent",
   "Amy": "http://worm.wikia.com/wiki/Panacea",
   "Armsmaster": "http://worm.wikia.com/wiki/Armsmaster",
+  "Ash Beast": "http://worm.wikia.com/wiki/Ash_Beast",
   "Bohu": "http://worm.wikia.com/wiki/Bohu",
   "Brian": "http://worm.wikia.com/wiki/Grue",
   "Cherie": "http://worm.wikia.com/wiki/Cherish",
@@ -21,6 +24,7 @@ module.exports = {
   "Damsel of Distress": "http://worm.wikia.com/wiki/Damsel_of_Distress",
   "Danny": "http://worm.wikia.com/wiki/Danny_Hebert",
   "Dennis": "http://worm.wikia.com/wiki/Clockblocker",
+  "Dean": "http://worm.wikia.com/wiki/Gallant",
   "Dinah": "http://worm.wikia.com/wiki/Dinah",
   "Dragon": "http://worm.wikia.com/wiki/Dragon",
   "Elle": "http://worm.wikia.com/wiki/Labyrinth",
@@ -37,6 +41,7 @@ module.exports = {
   "Mimi": "http://worm.wikia.com/wiki/Burnscar",
   "Missy": "http://worm.wikia.com/wiki/Vista",
   "Night": "http://worm.wikia.com/wiki/Night",
+  "Nilbog": "http://worm.wikia.com/wiki/Nilbog",
   "Noelle": "http://worm.wikia.com/wiki/Noelle_Meinhardt",
   "Number Man": "http://worm.wikia.com/wiki/The_Number_Man",
   "Rachel": "http://worm.wikia.com/wiki/Bitch",
@@ -64,6 +69,7 @@ module.exports = {
   "Yawgmoth": "http://mtg.gamepedia.com/Yawgmoth",
   "Cú Chulainn": "https://en.wikipedia.org/wiki/C%C3%BA_Chulainn",
   "Millenium Earl": "https://en.wikipedia.org/wiki/Millennium_Earl",
+  "Shuggoth": "https://en.wikipedia.org/wiki/Shoggoth",
 
   "OC": "http://tvtropes.org/pmwiki/pmwiki.php/Main/OriginalCharacter",
 }
