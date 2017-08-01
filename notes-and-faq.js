@@ -1,35 +1,28 @@
 'use strict'
 module.exports = (ahref, ul, cul, li, ol, col, oli) => {
   return `
-One more week or two with the old most-active list.  I'm not sure if I'll be
-able to do this next week as I'll be out-of-town for a wedding (we arrive on
-Friday sooo). If I do a update, it'll likely be a bit later than usual.
+One more week or two with the old most-active list.  (This week's numbers are slightly low across the board due to a travel related blip Friday morning.  But *waves* hi from lovely Port Townsend, WA, where I'll be for the next… um, day.)
 
-New section: Iarna's rec of the… every so often?  Week?  Maybe?  Whenever I manage to catch
-one of the new or updated worm fics myself anyway…
-${ul()}
-${li()} ${ahref('https://forums.sufficientvelocity.com/threads/39611', 'Wolf Spider')} by ${ahref('https://forums.sufficientvelocity.com/members/5133', 'The Laurent')} (9 chapters, 43k words), last updated Jul 16th, (tags: dogs, spiders).  Wolf Spider is The Laurent's latest fic where canon-power Taylor runs into Rachel early on and befriends her before doing much else as a cape.  Very much focused on character interactions over action, though that can and does drive the drama.  TBH, I was basically sold at "The Laurent" as I like pretty much everything they've written.  But Taylor/Rachel or Taylor & Rachel is unusual and touching.  It's excellent, do check it out.
-${cul()}
+This week's shout out is ${ahref('https://forums.spacebattles.com/posts/37392131', "Audacity; Damsel's Quest of Distress")} by ${ahref('https://forums.spacebattles.com/members/349360', 'frustratedFreeboota')} who patiently waited through me missing updates to their quest on the first pass three weeks running. So check out this Quest centered on everyone's favorite least effective villianess.
 
 Most active fics!
 ${ol()}
-${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} by ${ahref('https://forums.spacebattles.com/members/lithosmaitreya.330791/', 'LithosMaitreya')} (62 chapters, 67k words), 288 boops
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/magical-girl-escalation-taylor-worm-nanoha.28074/', 'Magical Girl Escalation Taylor')} by ${ahref('https://forums.sufficientvelocity.com/members/silently-watches.7954/', 'Silently Watches')} (89 chapters, 177k words), 257 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/well-traveled-worm-planeswalker-taylor.377626/', 'Well Traveled')} by ${ahref('https://forums.spacebattles.com/members/argentorum.313567/', 'Argentorum')} (35 chapters, 75k words), 256 boops
-${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/taylor-varga-worm-luna-varga.32119/', 'Taylor Varga')} by ${ahref('https://forums.sufficientvelocity.com/members/mp3-1415player.14570/', 'mp3.1415player')} (260 chapters, 1.2m words), 208 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/screw-the-rules-i-have-escalation-worm-yugioh.437215/', 'Screw the Rules, I have Escalation!')} by ${ahref('https://forums.spacebattles.com/members/stewart92.316597/', 'Stewart92')} (35 chapters, 93k words), 206 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/crouching-tiger-goes-to-prison-worm-au-of-an-au.480139/', 'Crouching Tiger Goes to Prison')} by ${ahref('https://forums.spacebattles.com/members/somewhat-disinterested.320877/', 'Somewhat Disinterested')} (55 chapters, 80k words), 198 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/526825/', 'Completely Unoriginal')} by ${ahref('https://forums.spacebattles.com/members/themanwhowas.315311/', 'themanwhowas')} (88 chapters, 101k words), 198 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/541966', "Oni's Endless Dance Party")} by ${ahref('https://forums.spacebattles.com/members/dingbat779.320828/', 'dingbat779')} (21 chapters, 35k words), 198 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/537310', 'Fear')} by ${ahref('https://forums.spacebattles.com/members/ryuugi.32789/', 'Ryuugi')} (9 chapters, 21k words), 167 boops
-${oli()} ${ahref('https://forums.spacebattles.com/threads/to-reign-in-heaven-quest-worm-30k.470213/', 'To Reign in Heaven')} by ${ahref('https://forums.spacebattles.com/members/cyrileom.317540/', 'cyrileom')} (176 chapters, 283k words), 135 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/526825/', 'Completely Unoriginal')} by ${ahref('https://forums.spacebattles.com/members/themanwhowas.315311/', 'themanwhowas')} (103 chapters, 113k words), 268 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/ring-maker-worm-lord-of-the-rings-alt-power.517894/', 'Ring-Maker')} by ${ahref('https://forums.spacebattles.com/members/lithosmaitreya.330791/', 'LithosMaitreya')} (65 chapters, 73k words), 262 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/stacked-deck-or-colin-wallis-vs-single-parenting-worm-persona.459689/', 'Stacked Deck (Or, Colin Wallis vs. Single Parenting)')} by ${ahref('https://forums.spacebattles.com/members/unwelcomestorm.311050/', 'UnwelcomeStorm')} (15 chapters, 35k words), 245 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/the-mage-in-the-bay-worm-dc-oc.547835/', 'The Mage in the Bay  OC')} by ${ahref('https://forums.spacebattles.com/members/stewart92.316597/', 'Stewart92')} (11 chapters, 23k words), 242 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/537310', 'Fear')} by ${ahref('https://forums.spacebattles.com/members/ryuugi.32789/', 'Ryuugi')} (23 chapters, 27k words), 206 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/alchemical-solutions-worm-exalted-story-only-thread.283060/', 'Alchemical Solutions')} by ${ahref('https://forums.spacebattles.com/members/gromweld.294183/', 'Gromweld')} (303 chapters, 675k words), 186 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/queen-of-blood-worm-castlevania.363842/', 'Queen of Blood')} by ${ahref('https://forums.spacebattles.com/members/sirwill.8092/', 'SirWill')} (104 chapters, 324k words), 184 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/537487', 'Average Joe: New Game Plus')} by ${ahref('https://forums.spacebattles.com/members/horizonthetransient.318806/', 'HorizonTheTransient')} (20 chapters, 28k words), 146 boops
+${oli()} ${ahref('https://forums.spacebattles.com/threads/emissary-a-deputy-recursive-crossover-worm-au-canon.532150/', 'Emissary - A Deputy Recursive Crossover')} by ${ahref('https://forums.spacebattles.com/members/noelemahc.285845/', 'Noelemahc')} (36 chapters, 81k words), 142 boops
+${oli()} ${ahref('https://forums.sufficientvelocity.com/threads/taylor-varga-worm-luna-varga.32119/', 'Taylor Varga')} by ${ahref('https://forums.sufficientvelocity.com/members/mp3-1415player.14570/', 'mp3.1415player')} (263 chapters, 1.2m words), 141 boops
 ${col()}
 
 Notes and FAQ
 ${ul()}
-${li()} "What's a boop?" It means the fic saw some amount of activity during one of my software's scan periods. Currently this is seven and half minutes. So one could say that the Taylor Varga thread was continuously active for one day, three hours and fifty-two minutes this week. Whew, that's a lot!
+${li()} "What's a boop?" It means the fic saw some amount of activity during one of my software's scan periods. Currently this is seven and half minutes.
 ${li()} "But that one has too many boops! It couldn't have been that active!" Well, keep in mind, these numbers are aggregated across all of the sources I scan: SB, SV, QQ, AO3 and FFNET.
-${li()} "But they have too few boops! I know it was more active than that!" Hah, well, mostly my software scans ever seven and half minutes. Except it's still running on my laptop, so not when I'm commuting or a handful of other occasions.
 ${li()} New to the fandom? "Quests" are little interactive games between the author and the readers where the readers vote on how the story progresses. While they're probably best enjoyed by participating they can often be solid stories unto themselves.
 ${li()} Relatedly, ${ahref(`https://www.reddit.com/r/makeyourchoice/`, `"CYOA"`)}s are little guides to setting, theme and character creation often used by folks writing SIs.
 ${li()} The total word counts and chapter counts NO LONGER (usually) include omake, so they should feel more accurate. They are included in the "added in this update" section.
