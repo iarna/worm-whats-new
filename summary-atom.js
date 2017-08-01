@@ -82,8 +82,12 @@ function printSummary (start, end, ourStream) {
 
   return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
-    .filter(fic => (fic.meta && fic.meta.modified) || fic.updated)
-    .filter(fic => inRange((fic.meta && fic.meta.modified) || fic.updated, start, end))
+    .filter(fic => fic.meta && fic.meta.chapters)
+    .filter(fic => {
+      fic.newChapters = fic.meta.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
+      if (fic.newChapters.length) fic.updated = chapterDate(fic.newChapters[fic.newChapters.length - 1])
+      return fic.newChapters.length
+    })
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .sort((a, b) => moment(a.updated).isAfter(b.updated) ? 1 : moment(a.updated).isBefore(b.updated) ? -1 : 0)
     .forEach(fic => {
@@ -159,7 +163,7 @@ function printFic (ourStream, fic) {
   ourStream.write(html`  <entry>
     <id>${fic.identifiers.replace(/^ur[li]:/,'')}#${fic.meta.chapters.length}</id>
     <published>${moment(fic.meta.created || fic.pubate).toISOString()}</published>
-    <updated>${moment(fic.meta.modified || fic.updated).toISOString()}</updated>
+    <updated>${moment(fic.updated).toISOString()}</updated>
     <link href="${shortlink(firstUpdate.link)}"/>
     <title>${fic.title} - ${firstUpdate.name}</title>
     <summary type="html">${summary.join('<br>\n')}</summary>

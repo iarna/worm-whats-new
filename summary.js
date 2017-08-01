@@ -77,16 +77,15 @@ function printSummary (start, end, ourStream) {
   return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm')
     .filter(fic => (fic.meta && fic.meta.modified) || fic.updated)
-    .filter(fic => inRange((fic.meta && fic.meta.modified) || fic.updated, start, end))
+    .filter(fic => fic.meta && fic.meta.chapters)
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
+    .filter(fic => {
+      fic.newChapters = fic.meta.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
+      return fic.newChapters.length
+    })
     .sort(titleSort(fic => fic.title))
     .forEach(fic => {
-      fic.newChapters = fic.meta ? fic.meta.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end)) : []
-      if (!fic.newChapters.length) {
-        console.error('No new chapters, skipping:', fic.title, fic.meta.chapters.map(chap => chapterDate(chap)), `${start}...${end}`)
-        return
-      }
-      fic.oldChapters = fic.meta ? fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
+      fic.oldChapters = fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap)))
       fic.newChapters.sort(cmpChapter)
       fic.oldChapters.sort(cmpChapter)
       const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
