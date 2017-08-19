@@ -136,23 +136,13 @@ function printSummary (start, end, ourStream) {
       }
       ourStream.write(`[size=7][url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url][/size]\n\n`)
 
+/*
       ourStream.write(notesAndFAQ(
         (href, link) => `[url=${href}]${link}[/url]`,
         () => '[list]', () => '[/list]', () => '[*]',
         () => '[list=1]', () => '[/list]', () => '[*]'
       ))
-
-      ourStream.write(`\nPrevious weeks:\n\n`)
-      ourStream.write(`[LIST]\n`)
-      ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8639589/']May 27th - June 2nd[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8595644/']May 21st - May 26th[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8554383/']May 14th - May 21st 2017[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.sufficientvelocity.com/posts/8513563/']May 7th - May 14th 2017[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.spacebattles.com/posts/35648194/']May 27th - June 2nd[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.spacebattles.com/posts/35405947/']May 21st - May 26th[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.spacebattles.com/posts/35203834/']May 14th - May 21st 2017[/URL]\n`)
-      ourStream.write(`[*][URL='https://forums.spacebattles.com/posts/35001643/']May 7th - May 14th 2017[/URL]\n`)
-      ourStream.write(`[/LIST]`)
+*/
       ourStream.write(`\n[spoiler="Concise list of updated fics:"]\n`)
       ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url]\n\n`)
       for (let type of qw`fic quest`) {
