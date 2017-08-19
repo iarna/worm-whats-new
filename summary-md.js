@@ -143,6 +143,10 @@ function printSummary (start, end, ourStream) {
 
       ourStream.write(`\n**Previous weeks:**\n\n`)
 
+      ourStream.write(`* [Aug 11th - Aug 18th](https://www.reddit.com/r/WormFanfic/comments/6uoc4u/new_and_updated_fanfic_in_the_week_of_2017aug12/)\n`)
+      ourStream.write(`* [Aug 5th - Aug 11th](https://www.reddit.com/r/WormFanfic/comments/6t6p5m/new_and_updated_fanfic_in_the_week_of_2017aug05/)\n`)
+      ourStream.write(`* [July 29th - Aug 4th](https://www.reddit.com/r/WormFanfic/comments/6rq8ay/new_and_updated_fanfic_in_the_week_of_2017jul29/)\n`)
+      ourStream.write(`* [July 22nd - July 28th](https://www.reddit.com/r/WormFanfic/comments/6q9g66/new_and_updated_fanfic_in_the_week_of_2017jul22/)\n`)
       ourStream.write(`* [July 15th - July 21st](https://www.reddit.com/r/WormFanfic/comments/6os9no/new_and_updated_fanfic_in_the_week_of_2017jul15/)\n`)
       ourStream.write(`* [July 8th - July 14th](https://www.reddit.com/r/WormFanfic/comments/6ne9an/new_and_updated_fanfic_in_the_week_of_2017jul08/)\n`)
       ourStream.write(`* [July 1st - July 7th](https://www.reddit.com/r/WormFanfic/comments/6lyrxl/new_and_updated_fanfic_in_the_week_of_2017jul01/)\n`)
