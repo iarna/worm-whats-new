@@ -126,7 +126,7 @@ function printFic (ourStream, fic) {
   const authorurl = fic.authorurl || fic.meta.authorUrl
   let summary = []
   if (fic.series && fic.series !== fic.title) {
-    summary.push(html`<b>Follows:</b> ${tagify(fic.series, ficLinks)})`)
+    summary.push(`<b>Follows:</b> ${tagify(fic.series, ficLinks)}`)
   }
   summary.push(html`<b>Status:</b> ${fic.status}`)
   summary.push(html`<b>Added:</b> ${cstr(newChapters)}, ${approx(newWords)} words`)
