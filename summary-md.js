@@ -193,16 +193,19 @@ function printSummary (start, end, ourStream) {
 }
 
 function printFic (ourStream, fic) {
-  const link = fic.identifiers.replace(/^ur[li]:/,'')
+  const sites = Object.keys(fic.meta.links)
+  const link = fic.meta.links[sites[0]]
   const authorurl = fic.authorurl || fic.meta.authorUrl
   const newChapters = fic.newChapters.length
   const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
+
   ourStream.write(`* [${fic.title}](${link})`)
   if (fic.oldChapters.length) {
     ourStream.write(` - [${firstUpdate.name}](${firstUpdate.link})`)
   }
   ourStream.write(` by ${fic.authors}`)
+  ourStream.write(' (' + sites.map(s =>`[${s}](${shortlink(fic.meta.links[s])})`).join(' ') + ')\n')
   if (fic.status !== 'one-shot' && fic.status !== 'new') {
     ourStream.write(` added ${cstr(newChapters)}, ${approx(newWords)} words`)
   }
