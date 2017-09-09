@@ -76,7 +76,7 @@ function printSummary (start, end, ourStream) {
   ourStream.write(`  <updated>${new Date().toISOString()}</updated>\n`)
 
   return readFics(`${__dirname}/Fanfic.json`)
-    .filter(fic => fic.fandom === 'Worm')
+    .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
     .filter(fic => fic.meta && fic.meta.chapters)
     .filter(fic => {
       fic.newChapters = fic.meta.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))

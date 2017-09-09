@@ -70,7 +70,7 @@ function printSummary (start, end, ourStream) {
   const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
 
   return readFics(`${__dirname}/Fanfic.json`)
-    .filter(fic => fic.fandom === 'Worm')
+    .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
     .filter(fic => (fic.meta && fic.meta.modified) || fic.updated)
     .filter(fic => fic.meta && fic.meta.chapters)
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))

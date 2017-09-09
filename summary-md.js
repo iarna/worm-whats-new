@@ -69,7 +69,7 @@ function printSummary (start, end, ourStream) {
   const htmlUrl = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}.html`
 
   return readFics(`${__dirname}/Fanfic.json`)
-    .filter(fic => fic.fandom === 'Worm')
+    .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
     .filter(fic => fic.meta)
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .filter(fic => {
