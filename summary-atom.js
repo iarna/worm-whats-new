@@ -130,7 +130,10 @@ function printFic (ourStream, fic) {
   }
   summary.push(html`<b>Status:</b> ${fic.status}`)
   summary.push(html`<b>Added:</b> ${cstr(newChapters)}, ${approx(newWords)} words`)
-  summary.push(html`<b>Total length:</b> <a href="${shortlink(fic.identifiers.replace(/^ur[li]:/,''))}">${cstr(chapters)}, ${approx(fic.words)} words</a>`)
+  const sites = Object.keys(fic.meta.links)
+  const link = fic.meta.links[sites[0]]
+  ourStream.write(html`<b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words` +
+    ' (' + sites.map(s =>html`<a href="${shortlink(fic.meta.links[s])}">${s}</a>`).join(', ') + ')\n')
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   const xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
@@ -161,7 +164,7 @@ function printFic (ourStream, fic) {
   if (fic.rec != '' && fic.rec != null) summary.push(`<b>Summary:</b><br>${fic.rec}\n`)
 
   ourStream.write(html`  <entry>
-    <id>${fic.identifiers.replace(/^ur[li]:/,'')}#${fic.meta.chapters.length}</id>
+    <id>${shortlink(link)}#${fic.meta.chapters.length}</id>
     <published>${moment(fic.meta.created || fic.pubate).toISOString()}</published>
     <updated>${moment(fic.updated).toISOString()}</updated>
     <link href="${shortlink(firstUpdate.link)}"/>

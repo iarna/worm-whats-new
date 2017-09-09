@@ -55,10 +55,12 @@ module.exports = function (makeLink) {
   }
   exports.inRange = inRange
   function inRange (date, start, end) {
+   if (date === null) return false
    return start.isSameOrBefore(date) && end.isAfter(date)
   }
   exports.chapterDate = chapterDate
   function chapterDate (chap) {
+    if (!chap.modified && !chap.created) return null
     return moment(chap.modified || chap.created).utc()
   }
   function cmpDate (aa, bb) {
