@@ -80,6 +80,7 @@ module.exports = {
   "Skidmark": "http://worm.wikia.com/wiki/Skidmark",
   "Sophia Hess": "http://worm.wikia.com/wiki/Shadow_Stalker",
   "Sophia": "http://worm.wikia.com/wiki/Shadow_Stalker",
+  "Shadow Stalker": "http://worm.wikia.com/wiki/Shadow_Stalker",
   "Squealer": "http://worm.wikia.com/wiki/Squealer",
   "Skitter": "http://worm.wikia.com/wiki/Taylor_Hebert",
   "Taylor Hebert": "http://worm.wikia.com/wiki/Taylor_Hebert",
