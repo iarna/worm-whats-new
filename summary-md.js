@@ -122,11 +122,12 @@ function printSummary (start, end, ourStream) {
         const last = updates.pop()
         const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
         if (type === 'fic') {
-          ourStream.write(`This week we saw ${updatestr}.\n\n`)
+          ourStream.write(`This week we saw ${updatestr}.`)
         } else {
-          ourStream.write(`We also saw ${updatestr}.\n\n`)
+          ourStream.write(` We also saw ${updatestr}.`)
         }
       }
+      ourStream.write(`\n\n`)
 
       ourStream.write(`# [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
