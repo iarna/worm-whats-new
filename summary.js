@@ -212,7 +212,9 @@ function printFic (ourStream, fic) {
   ourStream.write(' (' + sites.map(s =>html`<a href="${shortlink(fic.meta.links[s])}">${s}</a>`).join(', ') + ')\n')
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
-  const xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
+  let xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
+  const fandom = fic.fandom || fic.meta.fandom
+  if (fandom !== 'Worm') xover = [fandom].concat(xover)
   const fusion = fic.tags.filter(t => /^fusion:/.test(t)).map(t => t.slice(7))
   const meta = fic.tags.filter(t => /^meta:/.test(t)).map(t => t.slice(5))
   const language = fic.tags.filter(t => /^language:/.test(t)).map(t => t.slice(9))
