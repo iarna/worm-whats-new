@@ -71,6 +71,21 @@ module.exports = function (makeLink) {
     return cmpDate(chapterDate(aa), chapterDate(bb))
   }
 
-
+  exports.linkSite = linkSite
+  function linkSite (link) {
+    let cat = 'link'
+    if (/spacebattles/.test(link)) {
+      cat = 'SB'
+    } else if (/sufficientvelocity/.test(link)) {
+      cat = 'SV'
+    } else if (/questionablequesting/.test(link)) {
+      cat = 'QQ'
+    } else if (/archiveofourown/.test(link)) {
+      cat = 'AO3'
+    } else if (/fanfiction.net/.test(link)) {
+      cat = 'FF'
+    }
+    return cat
+  }
   return exports
 }

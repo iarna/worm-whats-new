@@ -11,6 +11,7 @@ const MiniPass = require('minipass')
 const writtenNumber = require('written-number')
 const qw = require('qw')
 const titleSort = require('./title-sort.js')
+const comments = require('./comments.js')
 const notesAndFAQ = require('./notes-and-faq.js')
 
 const xoverLinks = require('./substitutions/xover.js')
@@ -20,7 +21,7 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 const {
-  shortlink, ucfirst, things, cstr, inRange, chapterDate, cmpChapter
+  shortlink, ucfirst, things, cstr, inRange, chapterDate, cmpChapter, linkSite
 } = require('./summary-lib.js')((label, href) => `[${label}](${href})`)
 
 module.exports = (pivot, week) => {
@@ -51,14 +52,14 @@ function printSummary (start, end, ourStream) {
     fic: {
       new: [],
       revived: [],
-      updated: [],
+      modified: [],
       completed: [],
       oneshot: [],
     },
     quest: {
       new: [],
       revived: [],
-      updated: [],
+      modified: [],
       completed: [],
       oneshot: [],
     },
@@ -70,15 +71,15 @@ function printSummary (start, end, ourStream) {
 
   return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
-    .filter(fic => fic.meta)
+    .filter(fic => fic.chapters)
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .filter(fic => {
-      fic.newChapters = fic.meta.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
+      fic.newChapters = fic.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
       return fic.newChapters.length
     })
     .sort(titleSort(fic => fic.title))
     .forEach(fic => {
-      fic.oldChapters = fic.meta ? fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
+      fic.oldChapters = fic.chapters ? fic.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
       fic.newChapters.sort(cmpChapter)
       fic.oldChapters.sort(cmpChapter)
       const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
@@ -90,18 +91,18 @@ function printSummary (start, end, ourStream) {
         bucket(fic).completed.push(fic)
       } else if (fic.status === 'one-shot') {
         bucket(fic).oneshot.push(fic)
-      } else if (start.isSameOrBefore(fic.pubdate)) {
+      } else if (start.isSameOrBefore(fic.created)) {
         fic.status = 'new'
         bucket(fic).new.push(fic)
       } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
         fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
-        bucket(fic).updated.push(fic)
+        bucket(fic).modified.push(fic)
       }
     }).then(() => {
       const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
-      ourStream.write(`New and updated fanfic in the week of ${week}\n\n`)
+      ourStream.write(`New and modified fanfic in the week of ${week}\n\n`)
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
@@ -116,8 +117,8 @@ function printSummary (start, end, ourStream) {
         if (changes[type].revived.length) {
           updates.push(`[${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}](${htmlUrl}#revived-${type})`)
         }
-        if (changes[type].updated.length) {
-          updates.push(`[${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}](${htmlUrl}#updated-${type})`)
+        if (changes[type].modified.length) {
+          updates.push(`[${writtenNumber(changes[type].modified.length)} modified ${things(changes[type].modified.length, type)}](${htmlUrl}#modified-${type})`)
         }
         const last = updates.pop()
         const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
@@ -129,6 +130,12 @@ function printSummary (start, end, ourStream) {
       }
       ourStream.write(`\n\n`)
 
+      ourStream.write(comments(
+        (href, link) => `[${link}](${href})`,
+        () => '', () => '', () => '*',
+        () => '', () => '', () => '1.'
+      ))
+
       ourStream.write(`# [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
       ourStream.write(notesAndFAQ(
@@ -139,26 +146,25 @@ function printSummary (start, end, ourStream) {
 
       ourStream.write(`\n**Previous weeks:**\n\n`)
 
-      ourStream.write(`* [Sep 2nd - Sep 8th](https://www.reddit.com/r/WormFanfic/comments/6z0i8j/new_and_updated_fanfic_in_the_week_of_2017sep02/)\n`)
-      ourStream.write(`* [Aug 26th - Sep 1st](https://www.reddit.com/r/WormFanfic/comments/6xketi/new_and_updated_fanfic_in_the_week_of_2017aug26/)\n`)
-      ourStream.write(`* [Aug 19th - Aug 25th](https://www.reddit.com/r/WormFanfic/comments/6w4zj0/new_and_updated_fanfic_in_the_week_of_2017aug19/)\n`)
-      ourStream.write(`* [Aug 11th - Aug 18th](https://www.reddit.com/r/WormFanfic/comments/6uoc4u/new_and_updated_fanfic_in_the_week_of_2017aug12/)\n`)
-      ourStream.write(`* [Aug 5th - Aug 11th](https://www.reddit.com/r/WormFanfic/comments/6t6p5m/new_and_updated_fanfic_in_the_week_of_2017aug05/)\n`)
-      ourStream.write(`* [July 29th - Aug 4th](https://www.reddit.com/r/WormFanfic/comments/6rq8ay/new_and_updated_fanfic_in_the_week_of_2017jul29/)\n`)
-      ourStream.write(`* [July 22nd - July 28th](https://www.reddit.com/r/WormFanfic/comments/6q9g66/new_and_updated_fanfic_in_the_week_of_2017jul22/)\n`)
-      ourStream.write(`* [July 15th - July 21st](https://www.reddit.com/r/WormFanfic/comments/6os9no/new_and_updated_fanfic_in_the_week_of_2017jul15/)\n`)
-      ourStream.write(`* [July 8th - July 14th](https://www.reddit.com/r/WormFanfic/comments/6ne9an/new_and_updated_fanfic_in_the_week_of_2017jul08/)\n`)
-      ourStream.write(`* [July 1st - July 7th](https://www.reddit.com/r/WormFanfic/comments/6lyrxl/new_and_updated_fanfic_in_the_week_of_2017jul01/)\n`)
-      ourStream.write(`* [June 24th - June 30th](https://www.reddit.com/r/WormFanfic/comments/6klh09/new_and_updated_fanfic_in_the_week_of_2017jun24/)\n`)
-      ourStream.write(`* [June 17th - June 23rd](https://www.reddit.com/r/WormFanfic/comments/6j5ua9/new_and_updated_fanfic_in_the_week_of_2017jun17/)\n`)
-      ourStream.write(`* [June 10th - June 16th](https://www.reddit.com/r/WormFanfic/comments/6hr7ch/new_and_updated_fanfic_in_the_week_of_2017jun10/)\n`)
-      ourStream.write(`* [June 3rd - June 9th](https://www.reddit.com/r/WormFanfic/comments/6gcp5b/new_and_updated_fanfic_in_the_week_of_2017jun03/)\n`)
-      ourStream.write(`* [May 27th - June 2nd](https://www.reddit.com/r/WormFanfic/comments/6eyhv4/new_and_updated_fanfic_for_may_27th_to_june_2nd/)\n`)
+      ourStream.write(`* [Sep 2nd - Sep 8th](https://www.reddit.com/r/WormFanfic/comments/6z0i8j/new_and_modified_fanfic_in_the_week_of_2017sep02/)\n`)
+      ourStream.write(`* [Aug 26th - Sep 1st](https://www.reddit.com/r/WormFanfic/comments/6xketi/new_and_modified_fanfic_in_the_week_of_2017aug26/)\n`)
+      ourStream.write(`* [Aug 19th - Aug 25th](https://www.reddit.com/r/WormFanfic/comments/6w4zj0/new_and_modified_fanfic_in_the_week_of_2017aug19/)\n`)
+      ourStream.write(`* [Aug 11th - Aug 18th](https://www.reddit.com/r/WormFanfic/comments/6uoc4u/new_and_modified_fanfic_in_the_week_of_2017aug12/)\n`)
+      ourStream.write(`* [Aug 5th - Aug 11th](https://www.reddit.com/r/WormFanfic/comments/6t6p5m/new_and_modified_fanfic_in_the_week_of_2017aug05/)\n`)
+      ourStream.write(`* [July 29th - Aug 4th](https://www.reddit.com/r/WormFanfic/comments/6rq8ay/new_and_modified_fanfic_in_the_week_of_2017jul29/)\n`)
+      ourStream.write(`* [July 22nd - July 28th](https://www.reddit.com/r/WormFanfic/comments/6q9g66/new_and_modified_fanfic_in_the_week_of_2017jul22/)\n`)
+      ourStream.write(`* [July 15th - July 21st](https://www.reddit.com/r/WormFanfic/comments/6os9no/new_and_modified_fanfic_in_the_week_of_2017jul15/)\n`)
+      ourStream.write(`* [July 8th - July 14th](https://www.reddit.com/r/WormFanfic/comments/6ne9an/new_and_modified_fanfic_in_the_week_of_2017jul08/)\n`)
+      ourStream.write(`* [July 1st - July 7th](https://www.reddit.com/r/WormFanfic/comments/6lyrxl/new_and_modified_fanfic_in_the_week_of_2017jul01/)\n`)
+      ourStream.write(`* [June 24th - June 30th](https://www.reddit.com/r/WormFanfic/comments/6klh09/new_and_modified_fanfic_in_the_week_of_2017jun24/)\n`)
+      ourStream.write(`* [June 17th - June 23rd](https://www.reddit.com/r/WormFanfic/comments/6j5ua9/new_and_modified_fanfic_in_the_week_of_2017jun17/)\n`)
+      ourStream.write(`* [June 10th - June 16th](https://www.reddit.com/r/WormFanfic/comments/6hr7ch/new_and_modified_fanfic_in_the_week_of_2017jun10/)\n`)
+      ourStream.write(`* [June 3rd - June 9th](https://www.reddit.com/r/WormFanfic/comments/6gcp5b/new_and_modified_fanfic_in_the_week_of_2017jun03/)\n`)
+      ourStream.write(`* [May 27th - June 2nd](https://www.reddit.com/r/WormFanfic/comments/6eyhv4/new_and_modified_fanfic_for_may_27th_to_june_2nd/)\n`)
       ourStream.write(`* [May 21st - May 26th](https://www.reddit.com/r/WormFanfic/comments/6dl1t5/fanfic_updates_for_may_21st_to_may_26th/)\n`)
       ourStream.write(`* [May 14th - May 21st 2017](https://www.reddit.com/r/WormFanfic/comments/6c5ywx/new_stories_for_the_week_of_may_14th_2017/)\n`)
       ourStream.write(`* [May 7th - May 14th 2017](https://www.reddit.com/r/WormFanfic/comments/6ascfv/new_stories_and_updates_for_the_week_of_may_7th/)\n`)
-
-      ourStream.write(`\n**Concise list of updated fics:**\n\n`)
+      ourStream.write(`\n**Concise list of modified fics:**\n\n`)
       ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
       for (let type of qw`fic quest`) {
@@ -187,9 +193,9 @@ function printSummary (start, end, ourStream) {
         ourStream.write(`\n\n`)
       }
       for (let type of qw`fic quest`) {
-        if (!changes[type].updated.length) continue
+        if (!changes[type].modified.length) continue
         ourStream.write(`**Updated ${ucfirst(type)}s**\n\n`)
-        changes[type].updated.forEach(fic => printFic(ourStream, fic))
+        changes[type].modified.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`\n\n`)
       }
       ourStream.end()
@@ -197,11 +203,10 @@ function printSummary (start, end, ourStream) {
 }
 
 function printFic (ourStream, fic) {
-  const sites = Object.keys(fic.meta.links)
-  const link = fic.meta.links[sites[0]]
-  const authorurl = fic.authorurl || fic.meta.authorUrl
+  const link = fic.links[0]
+  const authorurl = fic.authorurl
   const newChapters = fic.newChapters.length
-  const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
+  const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
 
   if (fic.oldChapters.length) {
@@ -210,8 +215,8 @@ function printFic (ourStream, fic) {
   } else {
     ourStream.write(`* [${fic.title}](${link})`)
   }
-  ourStream.write(` by ${fic.authors}`)
-  ourStream.write(' (' + sites.map(s =>`[${s}](${shortlink(fic.meta.links[s])})`).join(' ') + ')\n')
+  ourStream.write(` by ${fic.author}`)
+  ourStream.write(' (' + fic.links.map(l =>`[${linkSite(l)}](${shortlink(l)})`).join(' ') + ')\n')
   if (fic.status !== 'one-shot' && fic.status !== 'new') {
     ourStream.write(` added ${cstr(newChapters)}, ${approx(newWords)} words`)
   }

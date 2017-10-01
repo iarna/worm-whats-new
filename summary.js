@@ -20,7 +20,7 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 const {
-  shortlink, things, strify, tagify, cstr, inRange, chapterDate, cmpChapter, ucfirst
+  shortlink, things, strify, tagify, cstr, inRange, chapterDate, cmpChapter, ucfirst, linkSite
 } = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
 
 
@@ -53,14 +53,14 @@ function printSummary (start, end, ourStream) {
     fic: {
       new: [],
       revived: [],
-      updated: [],
+      modified: [],
       completed: [],
       oneshot: [],
     },
     quest: {
       new: [],
       revived: [],
-      updated: [],
+      modified: [],
       completed: [],
       oneshot: [],
     },
@@ -71,16 +71,16 @@ function printSummary (start, end, ourStream) {
 
   return readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
-    .filter(fic => (fic.meta && fic.meta.modified) || fic.updated)
-    .filter(fic => fic.meta && fic.meta.chapters)
+    .filter(fic => fic.modified)
+    .filter(fic => fic.chapters)
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .filter(fic => {
-      fic.newChapters = fic.meta.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
+      fic.newChapters = fic.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
       return fic.newChapters.length
     })
     .sort(titleSort(fic => fic.title))
     .forEach(fic => {
-      fic.oldChapters = fic.meta.chapters.filter(chap => start.isAfter(chapterDate(chap)))
+      fic.oldChapters = fic.chapters.filter(chap => start.isAfter(chapterDate(chap)))
       fic.newChapters.sort(cmpChapter)
       fic.oldChapters.sort(cmpChapter)
       const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
@@ -92,14 +92,14 @@ function printSummary (start, end, ourStream) {
         bucket(fic).completed.push(fic)
       } else if (fic.status === 'one-shot') {
         bucket(fic).oneshot.push(fic)
-      } else if (start.isSameOrBefore(fic.pubdate)) {
+      } else if (start.isSameOrBefore(fic.created)) {
         fic.status = 'new'
         bucket(fic).new.push(fic)
       } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
         fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
-        bucket(fic).updated.push(fic)
+        bucket(fic).modified.push(fic)
       }
     }).then(() => {
       const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
@@ -107,7 +107,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write('<html>\n')
       ourStream.write('<head>\n')
       ourStream.write('<meta charset="utf-8">\n')
-      ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
+      ourStream.write(html`<title>New and modified Worm fanfic in the week of ${week}</title>\n`)
       ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`)
       ourStream.write(html`<style>
   body {
@@ -125,7 +125,7 @@ function printSummary (start, end, ourStream) {
   </style>\n`)
       ourStream.write('</head>\n')
       ourStream.write('<body>\n')
-      ourStream.write(`<h2>New and updated Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
+      ourStream.write(`<h2>New and modified Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
@@ -140,8 +140,8 @@ function printSummary (start, end, ourStream) {
         if (changes[type].revived.length) {
           updates.push(html`<a href="#revived-${type}">${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}</a>`)
         }
-        if (changes[type].updated.length) {
-          updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
+        if (changes[type].modified.length) {
+          updates.push(html`<a href="#modified-${type}">${writtenNumber(changes[type].modified.length)} modified ${things(changes[type].modified.length, type)}</a>`)
         }
         const last = updates.pop()
         const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
@@ -181,11 +181,11 @@ function printSummary (start, end, ourStream) {
         console.error(`Revived ${type}:`, changes[type].revived.length)
       }
       for (let type of qw`fic quest`) {
-        if (!changes[type].updated.length) continue
-        ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].updated.forEach(fic => printFic(ourStream, fic))
+        if (!changes[type].modified.length) continue
+        ourStream.write(`<h2><u><a name="modified-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
+        changes[type].modified.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
-        console.error(`Updated ${type}:`, changes[type].updated.length)
+        console.error(`Updated ${type}:`, changes[type].modified.length)
       }
       ourStream.write('</body></html>\n')
       ourStream.end()
@@ -193,13 +193,13 @@ function printSummary (start, end, ourStream) {
 }
 
 function printFic (ourStream, fic) {
-  const chapters = fic.meta.chapters.filter(ch => !ch.type || ch.type === 'chapter').length
+  const chapters = fic.chapters.filter(ch => !ch.type || ch.type === 'chapter').length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
-  const firstUpdate = fic.newChapters[0] || fic.meta.chapters[fic.meta.chapters.length - 1]
+  const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
 
-  const authorurl = fic.authorurl || fic.meta.authorUrl
-  const author = authorurl ? html`<a href="${shortlink(authorurl)}">${fic.authors.replace(/_and_/g,'and')}</a>` : html`${fic.authors}`
+  const authorurl = fic.authorurl
+  const author = authorurl ? html`<a href="${shortlink(authorurl)}">${fic.author.replace(/_and_/g,'and')}</a>` : html`${fic.author}`
   ourStream.write('<hr><article>\n')
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
   ourStream.write(html`<b><a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a>${[follows]}`)
@@ -207,13 +207,12 @@ function printFic (ourStream, fic) {
     ourStream.write(html` (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
   }
   ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
-  const sites = Object.keys(fic.meta.links)
   ourStream.write(html`<br><b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)
-  ourStream.write(' (' + sites.map(s =>html`<a href="${shortlink(fic.meta.links[s])}">${s}</a>`).join(', ') + ')\n')
+  ourStream.write(' (' + fic.links.map(l =>html`<a href="${shortlink(l)}">${linkSite(l)}</a>`).join(', ') + ')\n')
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   let xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
-  const fandom = fic.fandom || fic.meta.fandom
+  const fandom = fic.fandom
   if (fandom !== 'Worm') xover = [fandom].concat(xover)
   const fusion = fic.tags.filter(t => /^fusion:/.test(t)).map(t => t.slice(7))
   const meta = fic.tags.filter(t => /^meta:/.test(t)).map(t => t.slice(5))
@@ -236,8 +235,8 @@ function printFic (ourStream, fic) {
   if (meta.length !== 0) ourStream.write(`<br><b>Meta-fanfiction of:</b> ${strify(meta, ficLinks)}\n`)
   if (tags.length !== 0) ourStream.write(`<br><b>Tags:</b> ${strify(tags, Object.assign({}, tagLinks, charLinks))}\n`)
   if (fic.pov != '' && fic.pov != null) ourStream.write(`<br><b>POV:</b> ${strify(fic.pov.split(/, /), charLinks)}\n`)
-  if (fic.otn != '' && fic.otn != null) ourStream.write(`<br><b>Romantic pairing:</b> ${strify(fic.otn.split(', '), charLinks)}\n`)
-  if (fic.ftn != '' && fic.ftn != null) ourStream.write(`<br><b>Friendship pairing:</b> ${strify(fic.ftn.split(', '), charLinks)}\n`)
+  if (fic.otn.length) ourStream.write(`<br><b>Romantic pairing:</b> ${strify(fic.otn, charLinks)}\n`)
+  if (fic.ftn.length) ourStream.write(`<br><b>Friendship pairing:</b> ${strify(fic.ftn, charLinks)}\n`)
   if (characters.length) ourStream.write(`<br><b>Characters:</b> ${strify(characters, charLinks)}\n`)
   if (rating.length) ourStream.write(html`<br><b>Rating:</b> ${rating}\n`)
   if (fic.rec != '' && fic.rec != null) ourStream.write(`<br><b>Summary:</b><br>${fic.rec}\n`)
