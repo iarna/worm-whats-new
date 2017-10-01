@@ -9,7 +9,7 @@ const { shortlink } = require('./summary-lib.js')((label, href) => `[${label}]($
 const search = new RegExp(process.argv.slice(2).join(' '), 'i')
 
 readFics(`${__dirname}/Fanfic.json`)
-  .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
+  .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm' || t === 'fusion:Worm'))
   .filter(fic => search.test(fic.title) || fic.tags.some(t => search.test(t)))
   .sort((a, b) => moment(a.updated).isAfter(b.updated) ? -1 : moment(a.updated).isBefore(b.updated) ? 1 : 0)
 //  .sort((a, b) => b.words - a.words)
