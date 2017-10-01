@@ -25,6 +25,9 @@ function printFic (fic) {
     fic.title = fic.title.replace(/^[^:]+: /i, '')
   }
   console.log(`* [${fic.title}](${shortlink(link)}) by [${fic.authors}](${shortlink(authorurl)}) (${cstr(fic.chapters.length)}, ${approx(fic.words)} words), last updated ${reldate(fic.updated)}: ${fic.tags.join(', ')}`)
+  if (fic.rec) {
+    console.log(`  ${fic.rec}`)
+  }
 }
 
 function reldate (date) {
