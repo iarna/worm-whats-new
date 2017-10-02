@@ -16,5 +16,7 @@ module.exports = {
   "Nine Lives of the Calico": "https://forums.sufficientvelocity.com/threads/worm-nine-lives-of-the-calico.30603/",
   "Puella Magi Adfligo Systema": "https://forums.sufficientvelocity.com/threads/puella-magi-adfligo-systema.2538/",
   "Tabloid": "https://archiveofourown.org/works/8603173",
+  "The Wolf Time": "https://forums.spacebattles.com/threads/the-wolf-time-worm-au.336952/",
   "With Friends Like These": "https://forums.sufficientvelocity.com/threads/9324",
+  "Nine Lives of the Calico": "https://forums.sufficientvelocity.com/threads/worm-nine-lives-of-the-calico.30603/"
 }
