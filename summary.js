@@ -211,7 +211,7 @@ function printFic (ourStream, fic) {
   ourStream.write(' (' + fic.links.map(l =>html`<a href="${shortlink(l)}">${linkSite(l)}</a>`).join(', ') + ')\n')
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
-  let xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6))
+  let xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6)).filter(t => t !== 'Worm')
   const fandom = fic.fandom
   if (fandom !== 'Worm') xover = [fandom].concat(xover)
   const fusion = fic.tags.filter(t => /^fusion:/.test(t)).map(t => t.slice(7))
