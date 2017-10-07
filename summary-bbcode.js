@@ -54,14 +54,14 @@ function printSummary (start, end, ourStream) {
     fic: {
       new: [],
       revived: [],
-      modified: [],
+      updated: [],
       completed: [],
       oneshot: [],
     },
     quest: {
       new: [],
       revived: [],
-      modified: [],
+      updated: [],
       completed: [],
       oneshot: [],
     },
@@ -100,11 +100,11 @@ function printSummary (start, end, ourStream) {
         fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
-        bucket(fic).modified.push(fic)
+        bucket(fic).updated.push(fic)
       }
     }).then(() => {
       const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
-      ourStream.write(`New and modified fanfic in the week of ${week}\n\n`)
+      ourStream.write(`New and updated fanfic in the week of ${week}\n\n`)
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
@@ -119,8 +119,8 @@ function printSummary (start, end, ourStream) {
         if (changes[type].revived.length) {
           updates.push(`[url="${htmlUrl}#revived-${type}"]${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}[/url]`)
         }
-        if (changes[type].modified.length) {
-          updates.push(`[url="${htmlUrl}#modified-${type}"]${writtenNumber(changes[type].modified.length)} modified ${things(changes[type].modified.length, type)}[/url]`)
+        if (changes[type].updated.length) {
+          updates.push(`[url="${htmlUrl}#updated-${type}"]${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}[/url]`)
         }
         const last = updates.pop()
         const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
@@ -146,7 +146,7 @@ function printSummary (start, end, ourStream) {
         () => '[list=1]', () => '[/list]', () => '[*]'
       ))
 */
-      ourStream.write(`\n[spoiler="Concise list of modified fics:"]\n`)
+      ourStream.write(`\n[spoiler="Concise list of updated fics:"]\n`)
       ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url]\n\n`)
       for (let type of qw`fic quest`) {
         if (!changes[type].new.length) continue
@@ -182,10 +182,10 @@ function printSummary (start, end, ourStream) {
         ourStream.write(`\n\n`)
       }
       for (let type of qw`fic quest`) {
-        if (!changes[type].modified.length) continue
+        if (!changes[type].updated.length) continue
         ourStream.write(`[b][u]Updated ${ucfirst(type)}s[/u][/b]\n`)
         ourStream.write('[list]')
-        changes[type].modified.forEach(fic => printFic(ourStream, fic))
+        changes[type].updated.forEach(fic => printFic(ourStream, fic))
         ourStream.write('[/list]')
         ourStream.write(`\n\n`)
       }

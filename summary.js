@@ -53,14 +53,14 @@ function printSummary (start, end, ourStream) {
     fic: {
       new: [],
       revived: [],
-      modified: [],
+      updated: [],
       completed: [],
       oneshot: [],
     },
     quest: {
       new: [],
       revived: [],
-      modified: [],
+      updated: [],
       completed: [],
       oneshot: [],
     },
@@ -99,7 +99,7 @@ function printSummary (start, end, ourStream) {
         fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
-        bucket(fic).modified.push(fic)
+        bucket(fic).updated.push(fic)
       }
     }).then(() => {
       const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
@@ -107,7 +107,7 @@ function printSummary (start, end, ourStream) {
       ourStream.write('<html>\n')
       ourStream.write('<head>\n')
       ourStream.write('<meta charset="utf-8">\n')
-      ourStream.write(html`<title>New and modified Worm fanfic in the week of ${week}</title>\n`)
+      ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
       ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`)
       ourStream.write(html`<style>
   body {
@@ -125,7 +125,7 @@ function printSummary (start, end, ourStream) {
   </style>\n`)
       ourStream.write('</head>\n')
       ourStream.write('<body>\n')
-      ourStream.write(`<h2>New and modified Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
+      ourStream.write(`<h2>New and updated Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
@@ -140,8 +140,8 @@ function printSummary (start, end, ourStream) {
         if (changes[type].revived.length) {
           updates.push(html`<a href="#revived-${type}">${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}</a>`)
         }
-        if (changes[type].modified.length) {
-          updates.push(html`<a href="#modified-${type}">${writtenNumber(changes[type].modified.length)} modified ${things(changes[type].modified.length, type)}</a>`)
+        if (changes[type].updated.length) {
+          updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
         }
         const last = updates.pop()
         const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
@@ -181,11 +181,11 @@ function printSummary (start, end, ourStream) {
         console.error(`Revived ${type}:`, changes[type].revived.length)
       }
       for (let type of qw`fic quest`) {
-        if (!changes[type].modified.length) continue
-        ourStream.write(`<h2><u><a name="modified-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].modified.forEach(fic => printFic(ourStream, fic))
+        if (!changes[type].updated.length) continue
+        ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
+        changes[type].updated.forEach(fic => printFic(ourStream, fic))
         ourStream.write(`<br><br>\n`)
-        console.error(`Updated ${type}:`, changes[type].modified.length)
+        console.error(`Updated ${type}:`, changes[type].updated.length)
       }
       ourStream.write('</body></html>\n')
       ourStream.end()

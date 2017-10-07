@@ -50,14 +50,14 @@ function printSummary (start, end, ourStream) {
     fic: {
       new: [],
       revived: [],
-      modified: [],
+      updated: [],
       completed: [],
       oneshot: [],
     },
     quest: {
       new: [],
       revived: [],
-      modified: [],
+      updated: [],
       completed: [],
       oneshot: [],
     },
@@ -104,7 +104,7 @@ function printSummary (start, end, ourStream) {
       } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
         fic.status = 'revived'
       } else {
-        fic.status = 'modified'
+        fic.status = 'updated'
       }
       printFic(ourStream, fic)
     }).then(() => {
