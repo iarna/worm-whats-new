@@ -9,6 +9,7 @@ module.exports = {
   "Night Gaunt": "https://en.wikipedia.org/wiki/Nightgaunt",
 
 // worm chars
+  "Accord": "http://worm.wikia.com/wiki/Accord",
   "Aegis": "http://worm.wikia.com/wiki/Aegis",
   "Aisha Laborn": "http://worm.wikia.com/wiki/Imp",
   "Alabaster": "http://worm.wikia.com/wiki/Alabaster",
@@ -18,6 +19,7 @@ module.exports = {
   "Andrew Richter": "http://worm.wikia.com/wiki/Andrew_Richter",
   "Armsmaster": "http://worm.wikia.com/wiki/Armsmaster",
   "Ash Beast": "http://worm.wikia.com/wiki/Ash_Beast",
+  "Assault": "http://worm.wikia.com/wiki/Assault",
   "Bitch/Hellhound": "http://worm.wikia.com/wiki/Bitch",
   "Bitch": "http://worm.wikia.com/wiki/Bitch",
   "Bohu": "http://worm.wikia.com/wiki/Bohu",
@@ -25,6 +27,7 @@ module.exports = {
   "Brian": "http://worm.wikia.com/wiki/Grue",
   "Carol Dallon": "http://worm.wikia.com/wiki/Brandish",
   "Carlos": "http://worm.wikia.com/wiki/Aegis",
+  "Charlotte": "http://worm.wikia.com/wiki/Charlotte",
   "Cherie": "http://worm.wikia.com/wiki/Cherish",
   "Chris": "http://worm.wikia.com/wiki/Kid_Win",
   "Ciara": "http://worm.wikia.com/wiki/Glaistig_Uaine",
@@ -36,6 +39,7 @@ module.exports = {
   "Contessa": "http://worm.wikia.com/wiki/Contessa",
   "Damsel of Distress": "http://worm.wikia.com/wiki/Damsel_of_Distress",
   "Danny Hebert": "http://worm.wikia.com/wiki/Danny_Hebert",
+  "Danny H.": "http://worm.wikia.com/wiki/Danny_Hebert",
   "Danny": "http://worm.wikia.com/wiki/Danny_Hebert",
   "Dennis": "http://worm.wikia.com/wiki/Clockblocker",
   "Dean": "http://worm.wikia.com/wiki/Gallant",
@@ -47,6 +51,7 @@ module.exports = {
   "Emily Piggot": "http://worm.wikia.com/wiki/Emily_Piggot",
   "Elle": "http://worm.wikia.com/wiki/Labyrinth",
   "Emma Barnes": "http://worm.wikia.com/wiki/Emma_Barnes",
+  "Emma B.": "http://worm.wikia.com/wiki/Emma_Barnes",
   "Emma": "http://worm.wikia.com/wiki/Emma_Barnes",
   "Eric Pelham": "http://worm.wikia.com/wiki/Shielder",
   "Faultine": "http://worm.wikia.com/wiki/Faultline",
@@ -68,6 +73,7 @@ module.exports = {
   "Madison C.": "http://worm.wikia.com/wiki/Madison_Clements",
   "Madison": "http://worm.wikia.com/wiki/Madison_Clements",
   "Mark Dallon": "http://worm.wikia.com/wiki/Mark_Dallon",
+  "Mazinger Z(ero)": "http://mazinger.wikia.com/wiki/Mazinger_Z_(ZERO)",
   "Mimi": "http://worm.wikia.com/wiki/Burnscar",
   "Miss Militia": "http://worm.wikia.com/wiki/Miss_Militia",
   "Missy Biron": "http://worm.wikia.com/wiki/Vista",
@@ -103,6 +109,7 @@ module.exports = {
   "Victoria Dallon": "http://worm.wikia.com/wiki/Glory_Girl",
   "Victoria": "http://worm.wikia.com/wiki/Glory_Girl",
   "Vista": "http://worm.wikia.com/wiki/Vista",
+  "Weld": "http://worm.wikia.com/wiki/Weld",
 
 // xover chars
   "Luthor": "https://en.wikipedia.org/wiki/Lex_Luthor",
