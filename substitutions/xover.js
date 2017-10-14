@@ -196,5 +196,6 @@ module.exports = {
   "X-Men": "https://en.wikipedia.org/wiki/X-Men",
   "Young Justice": "https://en.wikipedia.org/wiki/Young_Justice_(TV_series)",
   "Yugioh": "https://en.wikipedia.org/wiki/Yu-Gi-Oh!",
+  "YuGiOh": "https://en.wikipedia.org/wiki/Yu-Gi-Oh!",
   "Yu-Gi-Oh": "https://en.wikipedia.org/wiki/Yu-Gi-Oh!",
 }
