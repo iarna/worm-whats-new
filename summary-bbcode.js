@@ -108,7 +108,7 @@ function printSummary (start, end, ourStream) {
       for (let type of qw`fic quest`) {
         const updates = []
         if (changes[type].new.length) {
-          updates.push(`[url="${htmlUrl}#new-${type}">${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}[/url]`)
+          updates.push(`[url="${htmlUrl}#new-${type}"]${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}[/url]`)
         }
         if (changes[type].completed.length) {
           updates.push(`[url="${htmlUrl}#completed-${type}"]${writtenNumber(changes[type].completed.length)} completed ${things(changes[type].completed.length, type)}[/url]`)
