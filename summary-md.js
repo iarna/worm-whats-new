@@ -134,7 +134,7 @@ function printSummary (start, end, ourStream) {
         (href, link) => `[${link}](${href})`,
         () => '', () => '', () => '*',
         () => '', () => '', () => '1.'
-      ))
+      ) + `\n\n`)
 
       ourStream.write(`# [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
