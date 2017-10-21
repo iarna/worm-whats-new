@@ -19,7 +19,8 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 const {
-  shortlink, things, strify, tagify, cstr, inRange, chapterDate, linkSite
+  shortlink, things, strify, tagify, cstr, inRange, chapterDate, linkSite,
+  updateSummary
 } = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
 
 module.exports = (pivot, week) => {
@@ -125,7 +126,7 @@ function printFic (ourStream, fic) {
     summary.push(`<b>Follows:</b> ${tagify(fic.series, ficLinks)}`)
   }
   summary.push(html`<b>Status:</b> ${fic.status}`)
-  summary.push(html`<b>Added:</b> ${cstr(newChapters)}, ${approx(newWords)} words`)
+  summary.push(html`<b>Added:</b> ${updateSummary(fic)}`)
   ourStream.write(html`<b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words` +
     ' (' + fic.links.map(l =>html`<a href="${shortlink(l)}">${linkSite(l)}</a>`).join(', ') + ')\n')
   

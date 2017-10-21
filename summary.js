@@ -20,7 +20,8 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 const {
-  shortlink, things, strify, tagify, cstr, inRange, chapterDate, cmpChapter, ucfirst, linkSite
+  shortlink, things, strify, tagify, cstr, inRange, chapterDate, cmpChapter,
+  ucfirst, linkSite, updateSummary
 } = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
 
 
@@ -204,7 +205,7 @@ function printFic (ourStream, fic) {
   const follows = (fic.series && fic.series !== fic.title) ? ` (follows ${tagify(fic.series, ficLinks)})` : ''
   ourStream.write(html`<b><a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a>${[follows]}`)
   if (fic.status !== 'one-shot' && fic.status !== 'new') {
-    ourStream.write(html` (${cstr(newChapters, fic.status !== 'one-shot' && 'new')}, ${approx(newWords)} words)\n`)
+    ourStream.write(html` (${updateSummary(fic)})\n`)
   }
   ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
   ourStream.write(html`<br><b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)

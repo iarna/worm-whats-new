@@ -1,4 +1,5 @@
 'use strict'
+const approx = require('approximate-number');
 const moment = require('moment')
 
 module.exports = function (makeLink) {
@@ -28,14 +29,17 @@ module.exports = function (makeLink) {
   }
   exports.cstr = cstr
   function cstr (chapters, chapterPrefix) {
-    const pre = chapterPrefix ? `${chapterPrefix} ` : ''
-    if (chapters === 1) {
-      return `${chapters} ${pre}chapter`
+    return numof(chapters, 'chapter', 'chapters', chapterPrefix)
+  }
+  exports.numof = numof
+  function numof (things, kind, kinds, prefix) {
+    const pre = things && prefix ? `${prefix} ` : ''
+    if (things === 1) {
+      return `${things} ${pre}${kind}`
     } else {
-      return `${chapters} ${pre}chapters`
+      return `${things} ${pre}${kinds}`
     }
   }
-
   exports.strify = strify
   function strify (things, links) {
     return linkUp(things, links).join(', ')
@@ -86,6 +90,56 @@ module.exports = function (makeLink) {
       cat = 'FF'
     }
     return cat
+  }
+  exports.updateSummary = updateSummary
+  function updateSummary (fic) {
+    const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
+    const prefix = fic.status !== 'one-shot' ? 'new' : ''
+    const ctypes = {}
+    fic.newChapters.forEach(ch => {
+      let type = (ch.type || 'chapter').toLowerCase()
+      let plural
+      switch (type) {
+        case 'sidestory':
+          plural = 'sidestories'
+          break
+        case 'extras':
+          plural = type
+          type = 'extra'
+          break
+        case 'media':
+        case 'informational':
+          type = type + ' post'
+          plural = type + 's'
+          break
+        case 'apocrypha':
+          plural = type
+          break
+        case 'staff post':
+        case 'chapter':
+          plural = type + 's'
+          break
+        default:
+          plural = type + '(s)'
+      }
+      if (!ctypes[type]) ctypes[type] = {type, plural, chapters: 0}
+      ++ctypes[type].chapters
+    })
+    let summary = []
+    let first = true
+    Object.values(ctypes).forEach(c => {
+      summary.push(numof(c.chapters, c.type, c.plural, first && prefix))
+      first = false
+    })
+    let sumstr = ''
+    const last = summary.pop()
+    if (summary.length == 0) {
+      sumstr = last
+    } else {
+      sumstr = summary.join(', ') + ' and ' + last
+    }
+
+    return `${sumstr}, ${approx(newWords)} words`
   }
   return exports
 }
