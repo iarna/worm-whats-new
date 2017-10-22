@@ -146,6 +146,7 @@ function printSummary (start, end, ourStream) {
 
       ourStream.write(`\n**Previous weeks:**\n\n`)
 
+      ourStream.write(`* [Oct 14th - Oct 20th](https://www.reddit.com/r/WormFanfic/comments/77wyzl/new_and_updated_fanfic_in_the_week_of_2017oct14/)\n`)
       ourStream.write(`* [Oct 7th - Oct 13th](https://www.reddit.com/r/WormFanfic/comments/76anx4/new_and_updated_fanfic_in_the_week_of_2017oct07/)\n`)
       ourStream.write(`* [Sep 30th - Oct 6th](https://www.reddit.com/r/WormFanfic/comments/74tkwu/new_and_updated_fanfic_in_the_week_of_2017sep30/)\n`)
       ourStream.write(`* [Sep 23rd - Sep 29th](https://www.reddit.com/r/WormFanfic/comments/73pkvw/new_and_modified_fanfic_in_the_week_of_2017sep23/)\n`)
@@ -167,8 +168,8 @@ function printSummary (start, end, ourStream) {
       ourStream.write(`* [June 3rd - June 9th](https://www.reddit.com/r/WormFanfic/comments/6gcp5b/new_and_updated_fanfic_in_the_week_of_2017jun03/)\n`)
       ourStream.write(`* [May 27th - June 2nd](https://www.reddit.com/r/WormFanfic/comments/6eyhv4/new_and_updated_fanfic_for_may_27th_to_june_2nd/)\n`)
       ourStream.write(`* [May 21st - May 26th](https://www.reddit.com/r/WormFanfic/comments/6dl1t5/fanfic_updates_for_may_21st_to_may_26th/)\n`)
-      ourStream.write(`* [May 14th - May 21st 2017](https://www.reddit.com/r/WormFanfic/comments/6c5ywx/new_stories_for_the_week_of_may_14th_2017/)\n`)
-      ourStream.write(`* [May 7th - May 14th 2017](https://www.reddit.com/r/WormFanfic/comments/6ascfv/new_stories_and_updates_for_the_week_of_may_7th/)\n`)
+      ourStream.write(`* [May 14th - May 21st](https://www.reddit.com/r/WormFanfic/comments/6c5ywx/new_stories_for_the_week_of_may_14th_2017/)\n`)
+      ourStream.write(`* [May 7th - May 14th](https://www.reddit.com/r/WormFanfic/comments/6ascfv/new_stories_and_updates_for_the_week_of_may_7th/)\n`)
       ourStream.write(`\n**Concise list of updated fics:**\n\n`)
       ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
 
