@@ -230,7 +230,7 @@ function printFic (ourStream, fic) {
   ourStream.write(` by ${fic.author}`)
   const links = {}
   fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = shortlink(l) })
-  ourStream.write(' (' + Object.keys(links).map(ls =>`[ls](${links[ls]})`).join(', ') + ')\n')
+  ourStream.write(' (' + Object.keys(links).map(ls =>`[${ls}](${links[ls]})`).join(', ') + ')\n')
   if (fic.status !== 'one-shot' && fic.status !== 'new') {
     ourStream.write(` added ${updateSummary(fic)}`)
   }
