@@ -48,7 +48,7 @@ module.exports = function (makeLink) {
   function tagify (thing, links) {
     for (let link of Object.keys(links).sort((a, b) => b.length - a.length)) {
       const escaped = link.replace(/[^\w\s]/g, '.')
-      const linkre = new RegExp('(\\b|\\W)(' + escaped + ')((?:\\b|\\W)(?:[^<]*$|[^<]*<[^/]))')
+      const linkre = new RegExp('(\\b|\\W)(' + escaped + ')((?:\\b|\\W)(?:[^<]*$|[^<]*<[^/]))', 'g')
       thing = thing.replace(linkre,
         (str, m1, m2, m3) => m1 + makeLink(m2, shortlink(links[link])) + m3)
     }
