@@ -71,6 +71,7 @@ async function printSummary (start, end, sectionList) {
 
   await readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
+    .filter(fic => fic.words)
     .filter(fic => fic.modified)
     .filter(fic => fic.chapters)
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
