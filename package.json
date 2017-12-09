@@ -20,7 +20,7 @@
   "homepage": "https://github.com/iarna/external-whats-new-links#readme",
   "dependencies": {
     "approximate-number": "^2.0.0",
-    "funstream": "^2.2.0",
+    "funstream": "^2.6.1",
     "html-escape": "^2.0.0",
     "json-stream": "^1.0.0",
     "minipass": "^2.0.2",
