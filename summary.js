@@ -56,6 +56,10 @@ async function printSummary (start, end, sectionList) {
       updated: [],
       completed: [],
       oneshot: [],
+      active: [],
+      stalled: [],
+      singles: [],
+      snips: []
     },
     quest: {
       new: [],
@@ -63,6 +67,10 @@ async function printSummary (start, end, sectionList) {
       updated: [],
       completed: [],
       oneshot: [],
+      active: [],
+      stalled: [],
+      singles: [],
+      snips: []
     },
   }
   const isQuest = fic => fic.tags.some(t => t === 'Quest')
@@ -86,6 +94,7 @@ async function printSummary (start, end, sectionList) {
       fic.oldChapters.sort(cmpChapter)
       const prevChapter = fic.oldChapters.length && chapterDate(fic.oldChapters[fic.oldChapters.length - 1])
       const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).clone().subtract(3, 'month')
+      const latestChapter = fic.newChapters.length && chapterDate(fic.newChapters[fic.newChapters.length - 1])
       if (fic.tags.some(t => t === 'Snippets')) {
         fic.title = fic.title.replace(/^[^:]+: /i, '')
       }
@@ -95,6 +104,18 @@ async function printSummary (start, end, sectionList) {
       } else if (fic.status === 'one-shot') {
         bucket(fic).oneshot.push(fic)
         return
+      }
+      if (fic.tags.some(tag => tag === 'Snippets')) {
+        bucket(fic).snips.push(fic)
+      } else if (end.clone().subtract(3, 'month').isSameOrBefore(latestChapter)) {
+        fic.status = 'active'
+        bucket(fic).active.push(fic)
+      } else if (fic.chapters.length === 1) {
+        fic.status = 'stalled'
+        bucket(fic).singles.push(fic)
+      } else {
+        fic.status = 'stalled'
+        bucket(fic).stalled.push(fic)
       }
       if (start.isSameOrBefore(fic.created)) {
         fic.status = 'new'
@@ -147,6 +168,18 @@ async function printSummary (start, end, sectionList) {
     if (changes[type].updated.length && sections.has(`updated-${type}`)) {
       updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
     }
+    if (changes[type].snips.length && sections.has(`snips-${type}`)) {
+      updates.push(html`<a href="#snips-${type}">${writtenNumber(changes[type].snips.length)} snippet ${things(changes[type].snips.length, type)}</a>`)
+    }
+    if (changes[type].active.length && sections.has(`active-${type}`)) {
+      updates.push(html`<a href="#active-${type}">${writtenNumber(changes[type].active.length)} still actively updating ${things(changes[type].active.length, type)}</a>`)
+    }
+    if (changes[type].stalled.length && sections.has(`stalled-${type}`)) {
+      updates.push(html`<a href="#stalled-${type}">${writtenNumber(changes[type].stalled.length)} currently stalled ${things(changes[type].stalled.length, type)}</a>`)
+    }
+    if (changes[type].singles.length && sections.has(`singles-${type}`)) {
+      updates.push(html`<a href="#singles-${type}">${writtenNumber(changes[type].singles.length)} never continued ${things(changes[type].singles.length, type)}</a>`)
+    }
     const last = updates.pop()
     const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
     if (type === 'fic') {
@@ -190,6 +223,38 @@ async function printSummary (start, end, sectionList) {
     changes[type].updated.forEach(fic => printFic(ourStream, fic))
     ourStream.write(`<br><br>\n`)
     console.error(`Updated ${type}:`, changes[type].updated.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].snips.length || !sections.has(`snips-${type}`)) continue
+    ourStream.write(`<h2><u><a name="snips-${type}">Snippet ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic's last update was ≥ 3 months ago)</em></p>\n`)
+    changes[type].snips.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Snippet ${type}:`, changes[type].snips.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].active.length || !sections.has(`active-${type}`)) continue
+    ourStream.write(`<h2><u><a name="active-${type}">Actively Updating ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic's last update was < 3 months ago)</em></p>\n`)
+    changes[type].active.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Actively Updating ${type}:`, changes[type].active.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].stalled.length || !sections.has(`stalled-${type}`)) continue
+    ourStream.write(`<h2><u><a name="stalled-${type}">Stalled ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic's last update was ≥ 3 months ago)</em></p>\n`)
+    changes[type].stalled.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Now Stalled ${type}:`, changes[type].stalled.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].singles.length || !sections.has(`singles-${type}`)) continue
+    ourStream.write(`<h2><u><a name="singles-${type}">Only One Chapter ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic's last update was ≥ 3 months ago)</em></p>\n`)
+    changes[type].singles.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Only One Chapter ${type}:`, changes[type].singles.length)
   }
   ourStream.write('</body></html>\n')
   ourStream.end()
