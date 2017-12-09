@@ -147,6 +147,7 @@ function printSummary (start, end, ourStream) {
 
       ourStream.write(`\n**Previous weeks:**\n\n`)
 
+      ourStream.write(`* [Dec 2nd - Dec 8th](https://www.reddit.com/r/WormFanfic/comments/7ilo83/new_and_updated_fanfic_in_the_week_of_2017dec02/)\n`)
       ourStream.write(`* [Nov 25th - Dec 1st](https://www.reddit.com/r/WormFanfic/comments/7h1nhd/new_and_updated_fanfic_in_the_week_of_2017nov25/)\n`)
       ourStream.write(`* [Nov 18th - Nov 24th](https://www.reddit.com/r/WormFanfic/comments/7fdwr7/new_and_updated_fanfic_in_the_week_of_2017nov18/)\n`)
       ourStream.write(`* [Oct 28th - Nov 17th](https://www.reddit.com/r/WormFanfic/comments/7dwedg/new_and_updated_fanfic_in_the_week_of_2017oct28/)\n`)
