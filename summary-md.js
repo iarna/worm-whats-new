@@ -24,7 +24,8 @@ const {
   shortlink, ucfirst, things, inRange, chapterDate, cmpChapter, linkSite, updateSummary
 } = require('./summary-lib.js')((label, href) => `[${label}](${href})`)
 
-module.exports = (pivot, week) => {
+module.exports = (pivot, week, duration) => {
+  if (!duration) duration = 1
   const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
   if (start.day() < pivot) {
     start.week(start.week()-1)
@@ -32,7 +33,7 @@ module.exports = (pivot, week) => {
   start.day(pivot)
   start.week(start.week() + week)
 
-  const end = start.clone().add(1, 'week')
+  const end = start.clone().add(duration, 'week')
 
   const ourStream = new MiniPass()
 

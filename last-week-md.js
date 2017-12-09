@@ -12,4 +12,4 @@ if (start.day() < pivot) {
 start.day(pivot)
 start.week(start.week() + week)
 const filename = start.format('YYYY-MM-DD[.md]')
-summary(pivot, week).pipe(fs.createWriteStream(filename)).on('finish', () => console.log(filename))
+summary(pivot, week, week * -1).pipe(fs.createWriteStream(filename)).on('finish', () => console.log(filename))
