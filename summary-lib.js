@@ -13,7 +13,7 @@ module.exports = function (makeLink) {
                .replace(/[/]$/, '')
                .replace(/forum.question/, 'question')
                .replace(/[/]fanfiction[.]net/, '/www.fiction.net')
-               .replace(/[/]s[/](\d+)[/].*/, '/s/$1')
+               .replace(/[/]s[/](\d+)([/]\d+)?(?:[/].*)?$/, '/s/$1$2')
   }
   exports.ucfirst = ucfirst
   function ucfirst (str) {
