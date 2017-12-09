@@ -211,7 +211,9 @@ function printFic (ourStream, fic) {
   }
   ourStream.write(`<br><b>Author:</b> ${author}</b>\n`)
   ourStream.write(html`<br><b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)
-  ourStream.write(' (' + fic.links.map(l =>html`<a href="${shortlink(l)}">${linkSite(l)}</a>`).join(', ') + ')\n')
+  const links = {}
+  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = shortlink(l) })
+  ourStream.write(' (' + Object.keys(links).map(ls =>html`<a href="${links[ls]}">${ls}</a>`).join(', ') + ')\n')
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
   let xover = fic.tags.filter(t => /^xover:/.test(t)).map(t => t.slice(6)).filter(t => t !== 'Worm')
