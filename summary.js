@@ -12,6 +12,7 @@ const MiniPass = require('minipass')
 const writtenNumber = require('written-number')
 const qw = require('qw')
 const titleSort = require('./title-sort.js')
+const fun = require('funstream')
 
 const xoverLinks = require('./substitutions/xover.js')
 const ficLinks = require('./substitutions/fics.js')
@@ -25,7 +26,7 @@ const {
 } = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
 
 
-module.exports = (pivot, week, duration) => {
+module.exports = (pivot, week, duration, sections) => {
   if (!duration) duration = 1
   const start = moment.utc({hour:0, minute:0, seconds:0, milliseconds:0})
   if (start.day() < pivot) {
@@ -36,21 +37,18 @@ module.exports = (pivot, week, duration) => {
 
   const end = start.clone().add(duration, 'week')
 
-  const ourStream = new MiniPass()
-
-  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
-  return ourStream
+  return fun(printSummary(start, end, sections))
 }
 
-module.exports.fromDates = (start, end) => {
-  const ourStream = new MiniPass()
-
-  printSummary(start, end, ourStream)
-  return ourStream
+module.exports.fromDates = (start, end, sections) => {
+  return fun(printSummary(start, end, sections))
 }
 
-
-function printSummary (start, end, ourStream) {
+async function printSummary (start, end, sectionList) {
+  const sections = new Set(sectionList || qw`
+    new-fic completed-fic oneshot-fic revived-fic updated-fic
+    new-quest completed-quest oneshot-quest revived-quest updated-quest`)
+  const ourStream = fun()
   const changes = {
     fic: {
       new: [],
@@ -71,7 +69,7 @@ function printSummary (start, end, ourStream) {
   const bucket = fic => changes[isQuest(fic) ? 'quest' : 'fic']
   const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
 
-  return readFics(`${__dirname}/Fanfic.json`)
+  await readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
     .filter(fic => fic.modified)
     .filter(fic => fic.chapters)
@@ -85,33 +83,36 @@ function printSummary (start, end, ourStream) {
       fic.oldChapters = fic.chapters.filter(chap => start.isAfter(chapterDate(chap)))
       fic.newChapters.sort(cmpChapter)
       fic.oldChapters.sort(cmpChapter)
-      const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
-      const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).subtract(3, 'month')
+      const prevChapter = fic.oldChapters.length && chapterDate(fic.oldChapters[fic.oldChapters.length - 1])
+      const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).clone().subtract(3, 'month')
       if (fic.tags.some(t => t === 'Snippets')) {
         fic.title = fic.title.replace(/^[^:]+: /i, '')
       }
       if (fic.status === 'complete') {
         bucket(fic).completed.push(fic)
+        return
       } else if (fic.status === 'one-shot') {
         bucket(fic).oneshot.push(fic)
-      } else if (start.isSameOrBefore(fic.created)) {
+        return
+      }
+      if (start.isSameOrBefore(fic.created)) {
         fic.status = 'new'
         bucket(fic).new.push(fic)
-      } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
+      } else if (prevChapter && newChapter && prevChapter.isBefore(newChapter)) {
         fic.status = 'revived'
         bucket(fic).revived.push(fic)
       } else {
         bucket(fic).updated.push(fic)
       }
-    }).then(() => {
-      const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
-      ourStream.write('<!DOCTYPE html>\n')
-      ourStream.write('<html>\n')
-      ourStream.write('<head>\n')
-      ourStream.write('<meta charset="utf-8">\n')
-      ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
-      ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`)
-      ourStream.write(html`<style>
+    })
+  const week = `${start.format('YYYY-MMM-DD')} to ${end.clone().subtract(1, 'days').format('MMM-DD')}`
+  ourStream.write('<!DOCTYPE html>\n')
+  ourStream.write('<html>\n')
+  ourStream.write('<head>\n')
+  ourStream.write('<meta charset="utf-8">\n')
+  ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
+  ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`)
+  ourStream.write(html`<style>
   body {
     margin-left: auto;
     margin-right: auto;
@@ -125,73 +126,73 @@ function printSummary (start, end, ourStream) {
   }
   a[href] { text-decoration: none; color: ForestGreen; }
   </style>\n`)
-      ourStream.write('</head>\n')
-      ourStream.write('<body>\n')
-      ourStream.write(`<h2>New and updated Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
-      for (let type of qw`fic quest`) {
-        const updates = []
-        if (changes[type].new.length) {
-          updates.push(html`<a href="#new-${type}">${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}</a>`)
-        }
-        if (changes[type].completed.length) {
-          updates.push(html`<a href="#completed-${type}">${writtenNumber(changes[type].completed.length)} completed ${things(changes[type].completed.length, type)}</a>`)
-        }
-        if (changes[type].oneshot.length) {
-          updates.push(html`<a href="#one-shot-${type}">${writtenNumber(changes[type].oneshot.length)} new one-shot ${things(changes[type].oneshot.length, type)}</a>`)
-        }
-        if (changes[type].revived.length) {
-          updates.push(html`<a href="#revived-${type}">${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}</a>`)
-        }
-        if (changes[type].updated.length) {
-          updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
-        }
-        const last = updates.pop()
-        const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
-        if (type === 'fic') {
-          ourStream.write(`There were ${updatestr}.<br>\n`)
-        } else {
-          ourStream.write(`There were also ${updatestr}.<br>\n`)
-        }
-      }
-      for (let type of qw`fic quest`) {
-        if (!changes[type].new.length) continue
-        ourStream.write(`<h2><u><a name="new-${type}">New ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].new.forEach(fic => printFic(ourStream, fic))
-        ourStream.write(`<br><br>\n`)
-        console.error(`New ${type}:`, changes[type].new.length)
-      }
-      for (let type of qw`fic quest`) {
-        if (!changes[type].completed.length) continue
-        ourStream.write(`<h2><u><a name="completed-${type}">Completed ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].completed.forEach(fic => printFic(ourStream, fic))
-        ourStream.write(`<br><br>\n`)
-        console.error(`Completed ${type}:`, changes[type].completed.length)
-      }
-      for (let type of qw`fic quest`) {
-        if (!changes[type].oneshot.length) continue
-        ourStream.write(`<h2><u><a name="one-shot-${type}">One-shot ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].oneshot.forEach(fic => printFic(ourStream, fic))
-        ourStream.write(`<br><br>\n`)
-        console.error(`One-shot ${type}:`, changes[type].oneshot.length)
-      }
-      for (let type of qw`fic quest`) {
-        if (!changes[type].revived.length) continue
-        ourStream.write(`<h2><u><a name="revived-${type}">Revived ${ucfirst(type)}s</u></h2>\n`)
-        ourStream.write(`<p style="margin-top: -1em;"><em>(last update was ≥ 3 months ago)</em></p>\n`)
-        changes[type].revived.forEach(fic => printFic(ourStream, fic))
-        ourStream.write(`<br><br>\n`)
-        console.error(`Revived ${type}:`, changes[type].revived.length)
-      }
-      for (let type of qw`fic quest`) {
-        if (!changes[type].updated.length) continue
-        ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
-        changes[type].updated.forEach(fic => printFic(ourStream, fic))
-        ourStream.write(`<br><br>\n`)
-        console.error(`Updated ${type}:`, changes[type].updated.length)
-      }
-      ourStream.write('</body></html>\n')
-      ourStream.end()
-    })
+  ourStream.write('</head>\n')
+  ourStream.write('<body>\n')
+  ourStream.write(`<h2>New and updated Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
+  for (let type of qw`fic quest`) {
+    const updates = []
+    if (changes[type].new.length && sections.has(`new-${type}`)) {
+      updates.push(html`<a href="#new-${type}">${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}</a>`)
+    }
+    if (changes[type].completed.length && sections.has(`completed-${type}`)) {
+      updates.push(html`<a href="#completed-${type}">${writtenNumber(changes[type].completed.length)} completed ${things(changes[type].completed.length, type)}</a>`)
+    }
+    if (changes[type].oneshot.length && sections.has(`oneshot-${type}`)) {
+      updates.push(html`<a href="#one-shot-${type}">${writtenNumber(changes[type].oneshot.length)} new one-shot ${things(changes[type].oneshot.length, type)}</a>`)
+    }
+    if (changes[type].revived.length && sections.has(`revived-${type}`)) {
+      updates.push(html`<a href="#revived-${type}">${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}</a>`)
+    }
+    if (changes[type].updated.length && sections.has(`updated-${type}`)) {
+      updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
+    }
+    const last = updates.pop()
+    const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
+    if (type === 'fic') {
+      ourStream.write(`There were ${updatestr}.<br>\n`)
+    } else {
+      ourStream.write(`There were also ${updatestr}.<br>\n`)
+    }
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].new.length || !sections.has(`new-${type}`)) continue
+    ourStream.write(`<h2><u><a name="new-${type}">New ${ucfirst(type)}s</u></h2>\n`)
+    changes[type].new.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`New ${type}:`, changes[type].new.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].completed.length || !sections.has(`completed-${type}`)) continue
+    ourStream.write(`<h2><u><a name="completed-${type}">Completed ${ucfirst(type)}s</u></h2>\n`)
+    changes[type].completed.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Completed ${type}:`, changes[type].completed.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].oneshot.length || !sections.has(`oneshot-${type}`)) continue
+    ourStream.write(`<h2><u><a name="one-shot-${type}">One-shot ${ucfirst(type)}s</u></h2>\n`)
+    changes[type].oneshot.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`One-shot ${type}:`, changes[type].oneshot.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].revived.length || !sections.has(`revived-${type}`)) continue
+    ourStream.write(`<h2><u><a name="revived-${type}">Revived ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(last update was ≥ 3 months ago)</em></p>\n`)
+    changes[type].revived.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Revived ${type}:`, changes[type].revived.length)
+  }
+  for (let type of qw`fic quest`) {
+    if (!changes[type].updated.length || !sections.has(`updated-${type}`)) continue
+    ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</u></h2>\n`)
+    changes[type].updated.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    console.error(`Updated ${type}:`, changes[type].updated.length)
+  }
+  ourStream.write('</body></html>\n')
+  ourStream.end()
+  return ourStream
 }
 
 function printFic (ourStream, fic) {
