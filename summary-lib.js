@@ -65,7 +65,7 @@ module.exports = function (makeLink) {
   exports.chapterDate = chapterDate
   function chapterDate (chap) {
     if (!chap.modified && !chap.created) return null
-    return moment(chap.modified || chap.created).utc()
+    return moment(chap.created || chap.modified).utc()
   }
   function cmpDate (aa, bb) {
     return aa > bb ? 1 : aa < bb ? -1 : 0
