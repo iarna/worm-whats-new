@@ -19,11 +19,13 @@
   },
   "homepage": "https://github.com/iarna/external-whats-new-links#readme",
   "dependencies": {
+    "@iarna/cli": "^1.2.0",
     "approximate-number": "^2.0.0",
-    "funstream": "^2.6.1",
+    "funstream": "^3.0.0",
     "html-escape": "^2.0.0",
     "json-stream": "^1.0.0",
-    "minipass": "^2.0.2",
+    "luxon": "^0.2.9",
+    "marky-markdown": "^11.3.2",
     "moment": "^2.18.1",
     "qw": "^1.0.1",
     "written-number": "^0.6.2"
