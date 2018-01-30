@@ -139,7 +139,11 @@ module.exports = function (makeLink) {
       sumstr = summary.join(', ') + ' and ' + last
     }
 
-    return `${sumstr}, ${approx(newWords)} words`
+    let result = `${sumstr}, ${approx(newWords)} words`
+    if (fic.status === 'complete') {
+      result += ', complete!'
+    }
+    return result
   }
   return exports
 }
