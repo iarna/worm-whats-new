@@ -8,7 +8,7 @@ const readFics = require('./read-fics.js')
 const html = require('./html-template-tag')
 const approx = require('approximate-number');
 const moment = require('moment')
-const MiniPass = require('minipass')
+const fun = require('funstream')
 const writtenNumber = require('written-number')
 const qw = require('qw')
 
@@ -34,17 +34,11 @@ module.exports = (pivot, week, duration) => {
 
   const end = start.clone().add(duration, 'week')
 
-  const ourStream = new MiniPass()
-
-  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
-  return ourStream
+  return fun.with(ourStream => printSummary(start, end, ourStream))
 }
 
 module.exports.fromDates = (start, end) => {
-  const ourStream = new MiniPass()
-
-  printSummary(start, end, ourStream).catch(err => ourStream.emit('error', err))
-  return ourStream
+  return fun.with(ourStream => printSummary(start, end, ourStream))
 }
 
 function printSummary (start, end, ourStream) {
@@ -86,6 +80,7 @@ function printSummary (start, end, ourStream) {
       return fic.newChapters.length
     })
     .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
+    .filter(fic => fic.title !== 'Ward')
     .sort((a, b) => moment(a.modified).isAfter(b.modified) ? 1 : moment(a.modified).isBefore(b.modified) ? -1 : 0)
     .forEach(fic => {
       fic.newChapters = fic.chapters ? fic.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end)) : []
@@ -159,7 +154,7 @@ function printFic (ourStream, fic) {
   if (fic.ftn.length) summary.push(`<b>Friendship pairing:</b> ${strify(fic.ftn, charLinks)}\n`)
   if (characters.length) summary.push(`<b>Characters:</b> ${strify(characters, charLinks)}\n`)
   if (rating.length) summary.push(html`<b>Rating:</b> ${rating}\n`)
-  if (fic.rec != '' && fic.rec != null) summary.push(`<b>Summary:</b><br>${fic.rec}\n`)
+  if (fic.comments != '' && fic.comments != null) summary.push(`<b>Summary:</b><br>${fic.comments}\n`)
 
   ourStream.write(html`  <entry>
     <id>${shortlink(link)}#${fic.chapters.length}</id>
