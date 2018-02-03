@@ -217,7 +217,7 @@ console.log('reporting')
   img {
     display: inline-block;
     float: right;
-    max-width:120px;
+    max-width:160px;
     max-height:160px;
     width: auto;
     height: auto;
