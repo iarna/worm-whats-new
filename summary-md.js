@@ -83,7 +83,7 @@ async function printSummary (start, end, sectionList, ourStream) {
 
   let all = await readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.title !== 'Worm (annotate)' && fic.title !== 'Worm (Comments)')
-    .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm'))
+    .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm' || t === 'fusion:Worm'))
     .filter(fic => fic.words)
     .filter(fic => fic.modified)
     .filter(fic => fic.chapters)
