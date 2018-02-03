@@ -6,6 +6,11 @@ module.exports = function (makeLink) {
   const exports = {}
   exports.shortlink = shortlink
   function shortlink (link) {
+    return xenlink(link)
+               .replace(/^https:/, '')
+  }
+  exports.xenlink = xenlink
+  function xenlink (link) {
     return link.replace(/[/]threads[/].*#post-(\d+)/, '/posts/$1')
                .replace(/[/]threads[/](?:[^.]+[.])?(\d+)/, '/threads/$1')
                .replace(/[/]members[/](?:[^.]+[.])?(\d+)[/]?/, '/members/$1')
@@ -14,6 +19,7 @@ module.exports = function (makeLink) {
                .replace(/forum.question/, 'question')
                .replace(/[/]fanfiction[.]net/, '/www.fiction.net')
                .replace(/[/]s[/](\d+)([/]\d+)?(?:[/].*)?$/, '/s/$1$2')
+               .replace(/forums.sufficientvelocity/, 'sufficientvelocity')
   }
   exports.ucfirst = ucfirst
   function ucfirst (str) {

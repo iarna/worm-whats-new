@@ -21,7 +21,7 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 const {
-  shortlink, ucfirst, things, inRange, chapterDate, cmpChapter, linkSite, updateSummary, cstr, tagify, strify
+  xenlink, ucfirst, things, inRange, chapterDate, cmpChapter, linkSite, updateSummary, cstr, tagify, strify
 } = require('./summary-lib.js')((label, href) => `[url="${href}"]${label}[/url]`)
 
 module.exports = (pivot, week, duration, sections) => {
@@ -379,13 +379,13 @@ function printFic (ourStream, fic) {
   const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
 
-  ourStream.write(`[*] [url="${shortlink(link)}"]${fic.title}[/url]`)
+  ourStream.write(`[*] [url="${xenlink(link)}"]${fic.title}[/url]`)
   if (fic.oldChapters.length) {
-    ourStream.write(` - [url="${shortlink(firstUpdate.link)}"]${firstUpdate.name}[/url]`)
+    ourStream.write(` - [url="${xenlink(firstUpdate.link)}"]${firstUpdate.name}[/url]`)
   }
   ourStream.write(` by ${fic.author}`)
   const links = {}
-  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = shortlink(l) })
+  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = xenlink(l) })
   ourStream.write(' (' + Object.keys(links).map(ls =>`[url="${links[ls]}"]${ls}[/url]`).join(', ') + ')\n')
   if (fic.status !== 'new' || newChapters !== fic.chapters.length ) {
     ourStream.write(` added ${updateSummary(fic)}`)
@@ -409,18 +409,18 @@ function printLongFic (ourStream, fic) {
   const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
 
   const authorurl = fic.authorurl
-  const author = authorurl ? `[url="${shortlink(authorurl)}"]${fic.author.replace(/_and_/g,'and')}[/url]` : `${fic.author}`
+  const author = authorurl ? `[url="${xenlink(authorurl)}"]${fic.author.replace(/_and_/g,'and')}[/url]` : `${fic.author}`
   ourStream.write('[hr][/hr]\n')
   const series = fic.series || fic.tags.filter(t => /^follows:/.test(t)).map(t => t.slice(8))[0]
   const follows = (series && series !== fic.title) ? ` (follows ${tagify(series, ficLinks)})` : ''
-  ourStream.write(`[b][url="${shortlink(firstUpdate.link.trim())}"]${fic.title}[/url][/b]${[follows]}`)
+  ourStream.write(`[b][url="${xenlink(firstUpdate.link.trim())}"]${fic.title}[/url][/b]${[follows]}`)
   if ((fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)) {
     ourStream.write(` (${updateSummary(fic)})`)
   }
   ourStream.write(`\n[b]Author:[/b] ${author}`)
   ourStream.write(`\n[b]Total length:[/b] ${cstr(chapters)}, ${approx(fic.words)} words`)
   const links = {}
-  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = shortlink(l) })
+  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = xenlink(l) })
   ourStream.write(' (' + Object.keys(links).map(ls =>`[url="${links[ls]}"]${ls}[/url]`).join(', ') + ')')
 
   if (fic.newInfracts) {
