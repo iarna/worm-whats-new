@@ -77,7 +77,7 @@ async function printSummary (start, end, sectionList, ourStream) {
   const isQuest = fic => fic.tags.some(t => t === 'Quest')
   const bucket = fic => changes[isQuest(fic) ? 'quest' : 'fic']
   const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
-  const htmlUrl = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}.html`
+  const htmlUrl = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}-nsfw.html`
   let ward
   let worm
 
@@ -402,11 +402,12 @@ function printFic (ourStream, fic) {
   const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
 
+  const nsfw = fic.tags.some(t => t === 'NSFW') ? '**\\[NSFW]** ' : ''
   if (fic.oldChapters && fic.oldChapters.length) {
-    ourStream.write(`* ${fic.title}`)
-    ourStream.write(` - [${firstUpdate.name}](${firstUpdate.link})`)
+    ourStream.write(`* ${nsfw}${fic.title}`)
+    ourStream.write(` - [${firstUpdate.name}](${shortlink(firstUpdate.link)})`)
   } else {
-    ourStream.write(`* [${fic.title}](${link})`)
+    ourStream.write(`* ${nsfw}[${fic.title}](${shortlink(link)})`)
   }
   ourStream.write(` by ${fic.author}`)
   const links = {}
@@ -428,11 +429,13 @@ function printLongFic (ourStream, fic) {
   ourStream.write('\n---\n\n')
   const series = fic.series || fic.tags.filter(t => /^follows:/.test(t)).map(t => t.slice(8))[0]
   const follows = (series && series !== fic.title) ? ` (follows ${tagify(series, ficLinks)})` : ''
-  ourStream.write(`* **[${fic.title}](${shortlink(firstUpdate.link.trim())})**${[follows]}`)
+  const nsfw_s = fic.tags.some(t => t === 'NSFW') ? '[\[NSFW\]](#s "' : ''
+  const nsfw_e = fic.tags.some(t => t === 'NSFW') ? '")' : ''
+  ourStream.write(`* **${nsfw_s}[${fic.title}](${shortlink(firstUpdate.link.trim())})**${[follows]}`)
   if ((fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)) {
     ourStream.write(` (${updateSummary(fic)})`)
   }
-  ourStream.write(`\n  * **Author:** ${author}\n`)
+  ourStream.write(`${nsfw_e}\n  * **Author:** ${author}\n`)
   ourStream.write(`  * **Total length:** ${cstr(chapters)}, ${approx(fic.words)} words`)
   const links = {}
   fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = shortlink(l) })
@@ -464,14 +467,14 @@ function printLongFic (ourStream, fic) {
   if (category.length !== 0) ourStream.write(`\n  * **Category:** ${category.join(', ')}`)
   if (xover.length !== 0) ourStream.write(`\n  * **Crossover:** ${xover.join(', ')}`)
   if (fusion.length !== 0) ourStream.write(`\n  * **Fusion:** ${fusion.join(', ')}`)
-  if (meta.length !== 0) ourStream.write(`\n  * **Meta-fanfiction of:** ${strify(meta, ficLinks)}`)
+  if (meta.length !== 0) ourStream.write(`\n  * **Meta-fanfiction of:** ${nsfw_s}${strify(meta, ficLinks)}${nsfw_e}`)
 //  if (tags.length !== 0) ourStream.write(`\n  * **Tags:** ${tags.join(', ')}`)
   if (fic.pov != '' && fic.pov != null) ourStream.write(`\n  * **POV:** ${fic.pov.trim()}`)
   if (fic.otn.length) ourStream.write(`\n  * **Romantic pairing:** ${fic.otn.join(', ')}`)
   if (fic.ftn.length) ourStream.write(`\n  * **Friendship pairing:** ${fic.ftn.join(', ')}`)
   if (characters.length) ourStream.write(`\n  * **Characters:** ${characters.join(', ')}`)
   if (rating.length) ourStream.write(`\n  * **Rating:** ${rating}`)
-  if (fic.rec != '' && fic.rec != null) ourStream.write(`\n  * **Summary:**\n${fic.rec.trim().replace(/\n/g, '\n    ')}`)
+  if (fic.rec != '' && fic.rec != null) ourStream.write(`\n  * **Summary:**\n    ${nsfw_s}${fic.rec.trim().replace(/\n/g, '\n    ')}${nsfw_e}`)
   ourStream.write('\n')
 }
 

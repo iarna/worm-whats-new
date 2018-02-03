@@ -79,7 +79,7 @@ function printSummary (start, end, ourStream) {
       if (fic.newChapters.length) fic.modified = chapterDate(fic.newChapters[fic.newChapters.length - 1])
       return fic.newChapters.length
     })
-    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
+    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW'))
     .filter(fic => fic.title !== 'Ward')
     .sort((a, b) => moment(a.modified).isAfter(b.modified) ? 1 : moment(a.modified).isBefore(b.modified) ? -1 : 0)
     .forEach(fic => {

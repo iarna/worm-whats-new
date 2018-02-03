@@ -87,7 +87,7 @@ async function printSummary (start, end, sectionList, ourStream) {
     .filter(fic => fic.words)
     .filter(fic => fic.modified)
     .filter(fic => fic.chapters)
-    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
+    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW'))
     .filter(fic => {
       fic.newChapters = fic.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
       fic.newestChapter = fic.chapters.filter(chap => !/staff/i.test(chap.type) && start.isBefore(chapterDate(chap)))[0]
