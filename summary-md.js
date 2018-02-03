@@ -267,6 +267,8 @@ async function printSummary (start, end, sectionList, ourStream) {
   }
   
   if (sections.has('week')) {
+    ourStream.write(`* [Jan 20th - Jan 26th](https://www.reddit.com/r/WormFanfic/comments/7tbytk/new_and_updated_fanfic_in_the_week_of_2018jan20/)\n`)
+    ourStream.write(`* [Jan 13th - Jan 19th](https://www.reddit.com/r/WormFanfic/comments/7rx1iw/new_and_updated_fanfic_in_the_week_of_2018jan13/)\n`)
     ourStream.write(`* [Jan 6th - Jan 12th](https://www.reddit.com/r/WormFanfic/comments/7q3tji/new_and_updated_fanfic_in_the_week_of_2018jan06/)\n`)
     ourStream.write(`* [Dec 30th - Jan 5th](https://www.reddit.com/r/WormFanfic/comments/7oirdk/new_and_updated_fanfic_in_the_week_of_2017dec30/)\n`)
     ourStream.write(`* [2017](https://www.reddit.com/r/WormFanfic/comments/7nfexz/new_and_updated_fanfic_in_the_year_of_2017/)\n`)
