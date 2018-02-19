@@ -249,7 +249,8 @@ async function printSummary (start, end, sectionList, ourStream) {
   ourStream.write(comments(
     (href, link) => `[${link}](${href})`,
     () => '', () => '', () => '*',
-    () => '', () => '', () => '1.'
+    () => '', () => '', () => '1.',
+    v => `*${v}*`, v => `**${v}**`
   ) + `\n\n`)
 
   ourStream.write(`# [Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}](${htmlUrl})\n\n`)
@@ -267,6 +268,8 @@ async function printSummary (start, end, sectionList, ourStream) {
   }
   
   if (sections.has('week')) {
+    ourStream.write(`* [Feb 3rd - Feb 9th](https://www.reddit.com/r/WormFanfic/comments/7wpeyw/new_and_updated_fanfic_in_the_week_of_2018feb03/)\n`)
+    ourStream.write(`* [Feb 27th - Feb 2nd](https://www.reddit.com/r/WormFanfic/comments/7uytu5/new_and_updated_fanfic_in_the_week_of_2018jan27/)\n`)
     ourStream.write(`* [Jan 20th - Jan 26th](https://www.reddit.com/r/WormFanfic/comments/7tbytk/new_and_updated_fanfic_in_the_week_of_2018jan20/)\n`)
     ourStream.write(`* [Jan 13th - Jan 19th](https://www.reddit.com/r/WormFanfic/comments/7rx1iw/new_and_updated_fanfic_in_the_week_of_2018jan13/)\n`)
     ourStream.write(`* [Jan 6th - Jan 12th](https://www.reddit.com/r/WormFanfic/comments/7q3tji/new_and_updated_fanfic_in_the_week_of_2018jan06/)\n`)
@@ -425,7 +428,8 @@ function printLongFic (ourStream, fic) {
   const chapters = fic.chapters.filter(ch => !ch.type || ch.type === 'chapter').length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
-  const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
+  const isUpdate = (fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)
+  const firstUpdate = isUpdate ? fic.newChapters[0] || fic.chapters[fic.chapters.length - 1] : fic.chapters[0]
 
   const author = fic.author
   ourStream.write('\n---\n\n')
@@ -434,7 +438,7 @@ function printLongFic (ourStream, fic) {
   const nsfw_s = fic.tags.some(t => t === 'NSFW') ? '[\[NSFW\]](#s "' : ''
   const nsfw_e = fic.tags.some(t => t === 'NSFW') ? '")' : ''
   ourStream.write(`* **${nsfw_s}[${fic.title}](${shortlink(firstUpdate.link.trim())})**${[follows]}`)
-  if ((fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)) {
+  if (isUpdate) {
     ourStream.write(` (${updateSummary(fic)})`)
   }
   ourStream.write(`${nsfw_e}\n  * **Author:** ${author}\n`)
@@ -460,6 +464,7 @@ function printLongFic (ourStream, fic) {
   const characters = fic.tags.filter(t => /^character:/.test(t))
        .map(t => t.slice(10).replace(/ \(Worm\)/, '').replace(/ - Character/i, ''))
   const tags = fic.tags.filter(t => !/^(?:follows|genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
+    .filter(t => t !== 'skip-sfw')
     .map(t => t.replace(/^freeform:/, ''))
 
   if (fic.created) ourStream.write(`\n  * **Created on:** ${relativeDate(fic.created)}`)

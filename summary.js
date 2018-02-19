@@ -91,7 +91,7 @@ console.log('reading')
     .filter(fic => fic.words)
     .filter(fic => fic.modified)
     .filter(fic => fic.chapters)
-    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW'))
+    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW' || t === 'skip-sfw'))
     .filter(fic => {
       fic.newChapters = fic.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
       fic.newestChapter = fic.chapters.filter(chap => !/staff/i.test(chap.type) && start.isBefore(chapterDate(chap)))[0]
@@ -216,8 +216,9 @@ console.log('reporting')
   }
   img {
     display: inline-block;
+    margin-left: 1em;
     float: right;
-    max-width:160px;
+    max-width:320px;
     max-height:160px;
     width: auto;
     height: auto;
@@ -408,20 +409,21 @@ function printFic (ourStream, fic) {
   const chapters = fic.chapters.filter(ch => !ch.type || ch.type === 'chapter').length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
-  const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
+  const isUpdate = (fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)
+  const firstUpdate = isUpdate ? fic.newChapters[0] || fic.chapters[fic.chapters.length - 1] : fic.chapters[0]
 
   const authorurl = fic.authorurl
   const author = authorurl ? html`<a href="${shortlink(authorurl)}">${fic.author.replace(/_and_/g,'and')}</a>` : html`${fic.author}`
-  if (fic.cover && !/fictionpressllc/.test(fic.cover)) {
+  if (fic.art || (fic.cover && !/fictionpressllc/.test(fic.cover))) {
     ourStream.write('<hr><article class="cover">\n')
-    ourStream.write(`<img src="${fic.cover}">`)
+    ourStream.write(`<img src="${fic.cover || fic.art}">`)
   } else {
     ourStream.write('<hr><article>\n')
   }
   const series = fic.series || fic.tags.filter(t => /^follows:/.test(t)).map(t => t.slice(8))[0]
   const follows = (series && series !== fic.title) ? ` (follows ${tagify(series, ficLinks)})` : ''
   ourStream.write(html`<b><a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a></b>${[follows]}`)
-  if ((fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)) {
+  if (isUpdate) {
     ourStream.write(html` (${updateSummary(fic)})\n`)
   }
   ourStream.write(`<br><b>Author:</b> ${author}\n`)

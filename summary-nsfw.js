@@ -5,15 +5,14 @@
  ***/
 const fs = require('fs')
 const readFics = require('./read-fics.js')
+const html = require('./html-template-tag')
 const approx = require('approximate-number');
 const moment = require('moment')
-const fun = require('funstream')
 const writtenNumber = require('written-number')
 const qw = require('qw')
 const titleSort = require('./title-sort.js')
-const comments = require('./comments.js')
-const notesAndFAQ = require('./notes-and-faq.js')
-
+const fun = require('funstream')
+const marky = require("marky-markdown")
 const xoverLinks = require('./substitutions/xover.js')
 const ficLinks = require('./substitutions/fics.js')
 const charLinks = require('./substitutions/chars.js')
@@ -21,8 +20,10 @@ const tagLinks = require('./substitutions/tags.js')
 const catLinks = require('./substitutions/cats.js')
 
 const {
-  xenlink, ucfirst, things, inRange, chapterDate, cmpChapter, linkSite, updateSummary, cstr, tagify, strify
-} = require('./summary-lib.js')((label, href) => `[url="${href}"]${label}[/url]`)
+  shortlink, things, strify, tagify, cstr, inRange, chapterDate, cmpChapter,
+  ucfirst, linkSite, updateSummary
+} = require('./summary-lib.js')((label, href) => html`<a href="${href}">${label}</a>`)
+
 
 module.exports = (pivot, week, duration, sections) => {
   if (!duration) duration = 1
@@ -37,9 +38,12 @@ module.exports = (pivot, week, duration, sections) => {
 
   return fun.with(ourStream => printSummary(start, end, sections, ourStream))
 }
-
 module.exports.fromDates = (start, end, sections) => {
   return fun.with(ourStream => printSummary(start, end, sections, ourStream))
+}
+
+function notCanon (fic) {
+  return fic.title !== 'Worm' && fic.title !== 'Ward'
 }
 
 async function printSummary (start, end, sectionList, ourStream) {
@@ -72,29 +76,31 @@ async function printSummary (start, end, sectionList, ourStream) {
       singles: [],
       newNoSingles: [],
       allUpdated: []
-    },
+    }
   }
   const isQuest = fic => fic.tags.some(t => t === 'Quest')
   const bucket = fic => changes[isQuest(fic) ? 'quest' : 'fic']
   const xmlUrl  = `https://shared.by.re-becca.org/misc/worm/this-week.xml`
-  const htmlUrl = `https://shared.by.re-becca.org/misc/worm/${start.format('YYYY-MM-DD')}.html`
   let ward
   let worm
 
+console.log('reading')
   let all = await readFics(`${__dirname}/Fanfic.json`)
     .filter(fic => fic.title !== 'Worm (annotate)' && fic.title !== 'Worm (Comments)')
     .filter(fic => fic.fandom === 'Worm' || fic.tags.some(t => t === 'xover:Worm' || t === 'fusion:Worm'))
     .filter(fic => fic.words)
     .filter(fic => fic.modified)
     .filter(fic => fic.chapters)
-    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW' || t === 'skip-sfw'))
+    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex'))
     .filter(fic => {
       fic.newChapters = fic.chapters.filter(chap => !/staff/i.test(chap.type) && inRange(chapterDate(chap), start, end))
       fic.newestChapter = fic.chapters.filter(chap => !/staff/i.test(chap.type) && start.isBefore(chapterDate(chap)))[0]
       return fic.newChapters.length
     })
     .list()
+console.log('filter complete')
   all.sort(titleSort(fic => fic.title))
+console.log('sort complete')
   all.forEach(fic => {
     if (fic.created) fic.created = moment(fic.created)
     fic.newChapCount = fic.newChapters.filter(chap => !chap.type || chap.type === 'chapter').length
@@ -102,7 +108,7 @@ async function printSummary (start, end, sectionList, ourStream) {
     if (sections.has('toptens')) {
       fic.newInfracts = fic.chapters.filter(chap => /staff/i.test(chap.type) && inRange(chapterDate(chap), start, end)).length
     }
-    fic.oldChapters = fic.chapters ? fic.chapters.filter(chap => start.isAfter(chapterDate(chap))) : []
+    fic.oldChapters = fic.chapters.filter(chap => start.isAfter(chapterDate(chap)))
     fic.newChapters.sort(cmpChapter)
     fic.oldChapters.sort(cmpChapter)
     if (fic.title === 'Ward') {
@@ -112,8 +118,8 @@ async function printSummary (start, end, sectionList, ourStream) {
       worm = fic
       return
     }
-    const prevChapter = fic.oldChapters.length && fic.oldChapters[fic.oldChapters.length - 1]
-    const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).subtract(3, 'month')
+    const prevChapter = fic.oldChapters.length && chapterDate(fic.oldChapters[fic.oldChapters.length - 1])
+    const newChapter = fic.newChapters.length && chapterDate(fic.newChapters[0]).clone().subtract(3, 'month')
     const latestChapter = fic.newChapters.length && chapterDate(fic.newChapters[fic.newChapters.length - 1])
     if (fic.tags.some(t => t === 'Snippets')) {
       fic.title = fic.title.replace(/^[^:]+: /i, '')
@@ -137,9 +143,9 @@ async function printSummary (start, end, sectionList, ourStream) {
     }
     if (start.isSameOrBefore(fic.created)) {
       fic.status = 'new'
-      if (fic.chapters.length !== 1) bucket(fic).newNoSingles.push(fic)
       bucket(fic).new.push(fic)
-    } else if (prevChapter && chapterDate(prevChapter).isBefore(newChapter)) {
+      if (fic.chapters.length !== 1) bucket(fic).newNoSingles.push(fic)
+    } else if (prevChapter && newChapter && prevChapter.isBefore(newChapter)) {
       fic.status = 'revived'
       bucket(fic).revived.push(fic)
       bucket(fic).allUpdated.push(fic)
@@ -154,7 +160,9 @@ async function printSummary (start, end, sectionList, ourStream) {
    if (b.created.isBefore(a.created)) return 1
    return 0
   }
+
   all = all.filter(fic => fic.title !== 'Worm' && fic.title !== 'Ward')
+  console.log('initial loading complete')
   let toptens = {}
   let totals = {}
   if (sections.has('toptens')) {
@@ -175,223 +183,218 @@ async function printSummary (start, end, sectionList, ourStream) {
     const biggest = Object.keys(doy).sort((a, b) => doy[b] - doy[a]).slice(0, 1)[0]
     totals.biggestDate = start.clone().dayOfYear(biggest)
     totals.biggestAmt = doy[biggest]
-    totals.none = Object.keys(doy).slice(1).filter(d => d[doy] === 0).map(d => start.clone().dayOfYear(d))
+    totals.none = Object.keys(doy).slice(1).filter(d => doy[d] === 0).map(d => start.clone().dayOfYear(d))
   }
 
-  const week = `${start.format('YYYY-MMM-DD')} to ${end.subtract(1, 'days').format('MMM-DD')}`
+console.log('reporting')
+  const week = `${start.format('YYYY-MMM-DD')} to ${end.clone().subtract(1, 'days').format('MMM-DD')}`
   const year = start.format('YYYY')
+  ourStream.write('<!DOCTYPE html>\n')
+  ourStream.write('<html>\n')
+  ourStream.write('<head>\n')
+  ourStream.write('<meta charset="utf-8">\n')
   if (sections.has('week')) {
-    ourStream.write(`New and updated fanfic in the week of ${week}\n\n`)
+    ourStream.write(html`<title>New and updated Worm fanfic in the week of ${week}</title>\n`)
   } else if (sections.has('year')) {
-    ourStream.write(`New and updated fanfic in the year of ${year}\n\n`)
+    ourStream.write(html`<title>New and updated Worm fanfic in the year of ${year}</title>\n`)
+  }
+  ourStream.write(html`<link rel="alternate" type="application/atom+xml" title="Atom feed" href="${xmlUrl}">`)
+  ourStream.write(html`<style>
+  body {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3em;
+    padding-left: 1em;
+    padding-right: 1em;
+    max-width: 800px;
+  }
+  .week {
+    white-space: nowrap;
+  }
+  article.cover {
+    min-height: 170px;
+  }
+  img {
+    display: inline-block;
+    margin-left: 1em;
+    float: right;
+    max-width:320px;
+    max-height:160px;
+    width: auto;
+    height: auto;
+  }
+  a[href] { text-decoration: none; color: ForestGreen; }
+  p { margin-top: 0; }
+  </style>\n`)
+  ourStream.write('</head>\n')
+  ourStream.write('<body>\n')
+  if (sections.has('week')) {
+    ourStream.write(`<h2>New and updated Worm fanfic in the week of <span class="week">${week}</span></h2>\n`)
+  } else if (sections.has('year')) {
+    ourStream.write(`<h2>New and updated Worm fanfic in the year of <span class="week">${year}</span></h2>\n`)
   }
   if (sections.has('totals')) {
-    ourStream.write(`You all updated ${approx(totals.fics)} fic last year, having ${approx(totals.words)} `
+    ourStream.write(`You all updated ${approx(totals.fics)} fic in ${year}, having ${approx(totals.words)} `
       + `words in them spread across ${approx(totals.chapters)} chapters! `
       + `That's ${approx(totals.words / 525600)} words a minute! `
-      + `\n\n`
+      + `<br><br>\n`
       + `Of those ${approx(totals.xovers)} were definitely crossovers or… uh, well, more likely altpowers borrowed from other sources. `
       + `Another ${approx(totals.altpowers)} were definitely altpowers. `
-      + `The most popular crossover source was Magic: The Gathering, but at only 21 fic that's barely a drop in the bucket. `
       + `As many as ${approx(totals.vanilla)} fic may have been free of altpowers and crossovers, but I’m dubious. I suspect `
       + `there are a bunch of untagged altpowers lurking amongst them.`
-      + `\n\n`
+      + `<br><br>\n`
       + `The ${relativeDate(totals.biggestDate)} saw the most new fic, with a total of ${totals.biggestAmt} started that day! `)
     if (totals.none.length) {
-      ourStream.write(`Meanwhile, the only days without new fic were ${totals.none.map(relativeDate).join(', ')}. `)
+      ourStream.write(`Meanwhile, there were ${totals.none.length} days without new fic`)
+      if (totals.none.length < 5) {
+        ourStream.write(`: ${totals.none.map(relativeDate).join(', ')}. `)
+      } else {
+        ourStream.write(`.`)
+      }
     } else {
       ourStream.write(`Every day this year saw a new fic started! `)
     }
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
   }
   for (let type of qw`fic quest`) {
     const updates = []
     if (changes[type].new.length && sections.has(`new-${type}`)) {
-      updates.push(`[url="${htmlUrl}#new-${type}"]${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}[/url]`)
+      updates.push(html`<a href="#new-${type}">${writtenNumber(changes[type].new.length)} new ${things(changes[type].new.length, type)}</a>`)
     }
     if (changes[type].newNoSingles.length && sections.has(`new-no-singles-${type}`)) {
-      updates.push(`[url="${htmlUrl}#newNoSingles-${type}"]${writtenNumber(changes[type].newNoSingles.length)} new ${things(changes[type].newNoSingles.length, type)}[/url]`)
+      updates.push(html`<a href="#newNoSingles-${type}">${writtenNumber(changes[type].newNoSingles.length)} new ${things(changes[type].newNoSingles.length, type)}</a>`)
     }
     if (changes[type].completed.length && sections.has(`completed-${type}`)) {
-      updates.push(`[url="${htmlUrl}#completed-${type}"]${writtenNumber(changes[type].completed.length)} completed ${things(changes[type].completed.length, type)}[/url]`)
+      updates.push(html`<a href="#completed-${type}">${writtenNumber(changes[type].completed.length)} completed ${things(changes[type].completed.length, type)}</a>`)
     }
     if (changes[type].oneshot.length && sections.has(`oneshot-${type}`)) {
-      updates.push(`[url="${htmlUrl}#one-shot-${type}"]${writtenNumber(changes[type].oneshot.length)} new one-shot ${things(changes[type].oneshot.length, type)}[/url]`)
+      updates.push(html`<a href="#one-shot-${type}">${writtenNumber(changes[type].oneshot.length)} new one-shot ${things(changes[type].oneshot.length, type)}</a>`)
     }
     if (changes[type].revived.length && sections.has(`revived-${type}`)) {
-      updates.push(`[url="${htmlUrl}#revived-${type}"]${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}[/url]`)
+      updates.push(html`<a href="#revived-${type}">${writtenNumber(changes[type].revived.length)} revived ${things(changes[type].revived.length, type)}</a>`)
     }
     if (changes[type].updated.length && sections.has(`updated-${type}`)) {
-      updates.push(`[url="${htmlUrl}#updated-${type}"]${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}[/url]`)
+      updates.push(html`<a href="#updated-${type}">${writtenNumber(changes[type].updated.length)} updated ${things(changes[type].updated.length, type)}</a>`)
     }
     if (changes[type].allUpdated.length && sections.has(`all-updated-${type}`)) {
-      updates.push(`[url="${htmlUrl}#allUpdated-${type}"]${writtenNumber(changes[type].allUpdated.length)} updated ${things(changes[type].allUpdated.length, type)}[/url]`)
+      updates.push(html`<a href="#allUpdated-${type}">${writtenNumber(changes[type].allUpdated.length)} updated ${things(changes[type].active.length, type)}</a>`)
     }
     if (changes[type].active.length && sections.has(`active-${type}`)) {
-      updates.push(`[url="#active-${type}"]${writtenNumber(changes[type].active.length)} still actively updating ${things(changes[type].active.length, type)}[/url]`)
+      updates.push(html`<a href="#active-${type}">${writtenNumber(changes[type].active.length)} still actively updating ${things(changes[type].active.length, type)}</a>`)
     }
     if (changes[type].stalled.length && sections.has(`stalled-${type}`)) {
-      updates.push(`[url="#stalled-${type}"]${writtenNumber(changes[type].stalled.length)} currently stalled ${things(changes[type].stalled.length, type)}[/url]`)
+      updates.push(html`<a href="#stalled-${type}">${writtenNumber(changes[type].stalled.length)} currently stalled ${things(changes[type].stalled.length, type)}</a>`)
     }
     if (changes[type].singles.length && sections.has(`singles-${type}`)) {
-      updates.push(`[url="#singles-${type}"]${writtenNumber(changes[type].singles.length)} never continued ${things(changes[type].singles.length, type)}[/url]`)
+      updates.push(html`<a href="#singles-${type}">${writtenNumber(changes[type].singles.length)} never continued ${things(changes[type].singles.length, type)}</a>`)
     }
     const last = updates.pop()
     const updatestr = updates.length ? updates.join(', ') + `, and ${last}` : last
     if (type === 'fic') {
-      ourStream.write(`This ${sections.has('week') ? 'week' : 'year'} we saw ${updatestr}.`)
+      ourStream.write(`There were ${updatestr}.<br>\n`)
     } else {
-      ourStream.write(` We also saw ${updatestr}.`)
+      ourStream.write(`<br>There were also ${updatestr}.<br>\n`)
     }
   }
-  ourStream.write(`\n\n`)
-
-  ourStream.write(comments(
-    (href, link) => `[url=${href}]${link}[/url]`,
-    () => '[list]', () => '[/list]', () => '[*]',
-    () => '[list=1]', () => '[/list]', () => '[*]',
-    v => `[i]${v}[/i]`, v => `[b]${v}[/b]`
-  ) + '\n\n')
-
-  ourStream.write(`[size=7][url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url][/size]\n\n`)
-/*
-  ourStream.write(notesAndFAQ(
-    (href, link) => `[url=${href}]${link}[/url]`,
-    () => '[list]', () => '[/list]', () => '[*]',
-    () => '[list=1]', () => '[/list]', () => '[*]'
-  ))
-*/
-  ourStream.write(`\n[spoiler="Concise list of updated fics:"]\n`)
-  if (sections.has('week')) {
-    ourStream.write(`For a more complete (and dare I say pretty) version visit the main page: [url=${htmlUrl}]Fanfic updates for ${start.format('MMM Do')} to ${end.format('MMM Do')}[/url]\n\n`)
-  }
   if (sections.has('toptens')) {
-    ourStream.write(`[size=6][b]The Ten Oldest Fic Updated in ${year}[/b][/size]\n\n`)
-    toptens.oldest.forEach(fic => printLongFic(ourStream, fic))
-    ourStream.write(`\n\n`)
-    ourStream.write(`[size=6][b]Annoyed the mods the most in ${year}[/b][/size]\n\n`)
-    toptens.infracts.forEach(fic => printLongFic(ourStream, fic))
-    ourStream.write(`\n\n`)
-    ourStream.write(`[size=6][b]The Ten Wordiest Fic of ${year}[/b][/size]\n\n`)
-    toptens.wordiest.forEach(fic => printLongFic(ourStream, fic))
-    ourStream.write(`\n\n`)
+    ourStream.write(`<h2><u>The Ten Oldest Fic Updated in ${year}</u></h2>\n`)
+    toptens.oldest.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
+    if (toptens.infracts.length && toptens.infracts[0].newInfracts > 0) {
+      ourStream.write(`<h2><u>Annoyed the mods the most in ${year}</u></h2>\n`)
+      toptens.infracts.forEach(fic => printFic(ourStream, fic))
+      ourStream.write(`<br><br>\n`)
+    }
+    ourStream.write(`<h2><u>The Ten Wordiest Fic of ${year}</u></h2>\n`)
+    toptens.wordiest.forEach(fic => printFic(ourStream, fic))
+    ourStream.write(`<br><br>\n`)
   }
   if (ward && sections.has('ward')) {
-    ourStream.write(`[b][u]Ward Updates[/u][/b]\n`)
-    ourStream.write(`[size=3][i](Parahumans 2 - The rules have changed)[/i][/size]\n`)
-    ourStream.write(`[list]`)
+    ourStream.write(`<h2><u>Ward Updates</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(Parahumans 2 - The rules have changed)</em></p>\n`)
     printFic(ourStream, ward)
-    ourStream.write(`[/list]\n\n`)
+    ourStream.write(`<br><br>\n`)
   }
   if (worm && sections.has('worm')) {
-    ourStream.write(`[b][u]Worm Updates[/u][/b]\n`)
-    ourStream.write(`[list]`)
+    ourStream.write(`<h2><u>Worm Updates</u></h2>\n`)
     printFic(ourStream, worm)
-    ourStream.write(`[/list]\n\n`)
+    ourStream.write(`<br><br>\n`)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].new.length || !sections.has(`new-${type}`)) continue
-    ourStream.write(`[b][u]New ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="new-${type}">New ${ucfirst(type)}s</a></u></h2>\n`)
     changes[type].new.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`New ${type}:`, changes[type].new.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].newNoSingles.length || !sections.has(`new-no-singles-${type}`)) continue
-    ourStream.write(`[b][u]New ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="newNoSingles-${type}">New ${ucfirst(type)}s</a></u></h2>\n`)
     changes[type].newNoSingles.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`New ${type}:`, changes[type].newNoSingles.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].completed.length || !sections.has(`completed-${type}`)) continue
-    ourStream.write(`[b][u]Completed ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="completed-${type}">Completed ${ucfirst(type)}s</a></u></h2>\n`)
     changes[type].completed.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Completed ${type}:`, changes[type].completed.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].oneshot.length || !sections.has(`oneshot-${type}`)) continue
-    ourStream.write(`[b][u]One-shot ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="one-shot-${type}">One-shot ${ucfirst(type)}s</a></u></h2>\n`)
     changes[type].oneshot.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`One-shot ${type}:`, changes[type].oneshot.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].revived.length || !sections.has(`revived-${type}`)) continue
-    ourStream.write(`[b][u]Revived ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write(`[size=3][i](last update was ≥ 3 months ago)[/i][/size]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="revived-${type}">Revived ${ucfirst(type)}s</a></u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(last update was ≥ 3 months ago)</em></p>\n`)
     changes[type].revived.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Revived ${type}:`, changes[type].revived.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].updated.length || !sections.has(`updated-${type}`)) continue
-    ourStream.write(`[b][u]Updated ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="updated-${type}">Updated ${ucfirst(type)}s</a></u></h2>\n`)
     changes[type].updated.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Updated ${type}:`, changes[type].updated.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].allUpdated.length || !sections.has(`allUpdated-${type}`)) continue
-    ourStream.write(`[b][u]Updated ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="allUpdated-${type}">Updated ${ucfirst(type)}s</a></u></h2>\n`)
     changes[type].allUpdated.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Updated ${type}:`, changes[type].allUpdated.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].active.length || !sections.has(`active-${type}`)) continue
-    ourStream.write(`[b][u]Actively Updating ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="active-${type}">Actively Updating ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic's last update was < 3 months ago)</em></p>\n`)
     changes[type].active.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Actively Updating ${type}:`, changes[type].active.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].stalled.length || !sections.has(`stalled-${type}`)) continue
-    ourStream.write(`[b][u]Stalled ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="stalled-${type}">Stalled ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic's last update was ≥ 3 months ago)</em></p>\n`)
     changes[type].stalled.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Now Stalled ${type}:`, changes[type].stalled.length)
   }
   for (let type of qw`fic quest`) {
     if (!changes[type].singles.length || !sections.has(`singles-${type}`)) continue
-    ourStream.write(`[b][u]Never continued ${ucfirst(type)}s[/u][/b]\n`)
-    ourStream.write('[list]')
+    ourStream.write(`<h2><u><a name="singles-${type}">Never continued ${ucfirst(type)}s</u></h2>\n`)
+    ourStream.write(`<p style="margin-top: -1em;"><em>(fic only got one chapter)</em></p>\n`)
     changes[type].singles.forEach(fic => printFic(ourStream, fic))
-    ourStream.write('[/list]')
-    ourStream.write(`\n\n`)
+    ourStream.write(`<br><br>\n`)
+    console.error(`Only One Chapter ${type}:`, changes[type].singles.length)
   }
-  ourStream.write('[/spoiler]\n')
-}
-
-function printFic (ourStream, fic) {
-  const link = fic.links[0]
-  const authorurl = fic.authorurl
-  const newChapters = fic.newChapters.length
-  const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
-  const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
-
-  ourStream.write(`[*] [url="${xenlink(link)}"]${fic.title}[/url]`)
-  if (fic.oldChapters.length) {
-    ourStream.write(` - [url="${xenlink(firstUpdate.link)}"]${firstUpdate.name}[/url]`)
-  }
-  ourStream.write(` by ${fic.author}`)
-  const links = {}
-  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = xenlink(l) })
-  ourStream.write(' (' + Object.keys(links).map(ls =>`[url="${links[ls]}"]${ls}[/url]`).join(', ') + ')\n')
-  if (fic.status !== 'new' || newChapters !== fic.chapters.length ) {
-    ourStream.write(` added ${updateSummary(fic)}`)
-  }
-  ourStream.write(`\n`)
+  ourStream.write('</body></html>\n')
 }
 
 function relativeDate (updated) {
@@ -402,8 +405,7 @@ function relativeDate (updated) {
                    : updated.format('Do MMM, Y')
   return updatedStr
 }
-
-function printLongFic (ourStream, fic) {
+function printFic (ourStream, fic) {
   const chapters = fic.chapters.filter(ch => !ch.type || ch.type === 'chapter').length
   const newChapters = fic.newChapters.length
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
@@ -411,22 +413,28 @@ function printLongFic (ourStream, fic) {
   const firstUpdate = isUpdate ? fic.newChapters[0] || fic.chapters[fic.chapters.length - 1] : fic.chapters[0]
 
   const authorurl = fic.authorurl
-  const author = authorurl ? `[url="${xenlink(authorurl)}"]${fic.author.replace(/_and_/g,'and')}[/url]` : `${fic.author}`
-  ourStream.write('[hr][/hr]\n')
+  const author = authorurl ? html`<a href="${shortlink(authorurl)}">${fic.author.replace(/_and_/g,'and')}</a>` : html`${fic.author}`
+  if (fic.art || (fic.cover && !/fictionpressllc/.test(fic.cover))) {
+    ourStream.write('<hr><article class="cover">\n')
+    ourStream.write(`<img src="${fic.cover || fic.art}">`)
+  } else {
+    ourStream.write('<hr><article>\n')
+  }
   const series = fic.series || fic.tags.filter(t => /^follows:/.test(t)).map(t => t.slice(8))[0]
   const follows = (series && series !== fic.title) ? ` (follows ${tagify(series, ficLinks)})` : ''
-  ourStream.write(`[b][url="${xenlink(firstUpdate.link.trim())}"]${fic.title}[/url][/b]${[follows]}`)
+  const nsfw = fic.tags.some(t => t === 'NSFW') ? '[NSFW] ' : ''
+  ourStream.write(html`<b>${nsfw}<a href="${shortlink(firstUpdate.link.trim())}" title="${firstUpdate.name}">${fic.title}</a></b>${[follows]}`)
   if (isUpdate) {
-    ourStream.write(` (${updateSummary(fic)})`)
+    ourStream.write(html` (${updateSummary(fic)})\n`)
   }
-  ourStream.write(`\n[b]Author:[/b] ${author}`)
-  ourStream.write(`\n[b]Total length:[/b] ${cstr(chapters)}, ${approx(fic.words)} words`)
+  ourStream.write(`<br><b>Author:</b> ${author}\n`)
+  ourStream.write(html`<br><b>Total length:</b> ${cstr(chapters)}, ${approx(fic.words)} words`)
   const links = {}
-  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = xenlink(l) })
-  ourStream.write(' (' + Object.keys(links).map(ls =>`[url="${links[ls]}"]${ls}[/url]`).join(', ') + ')')
+  fic.links.forEach(l => { if (!links[linkSite(l)]) links[linkSite(l)] = l })
+  ourStream.write(' (' + Object.keys(links).map(ls =>html`<a href="${links[ls]}">${ls}</a>`).join(', ') + ')\n')
 
   if (fic.newInfracts) {
-    ourStream.write(`\n[b]Forum moderation actions:[/b] ${approx(fic.newInfracts)}`)
+    ourStream.write(html`<br><b>Forum moderation actions:</b> ${approx(fic.newInfracts)}`)
   }
   
   const genre = fic.tags.filter(t => /^genre:/.test(t)).map(t => t.slice(6))
@@ -443,24 +451,24 @@ function printLongFic (ourStream, fic) {
        .map(t => t.slice(10).replace(/ \(Worm\)/, '').replace(/ - Character/i, ''))
        .map(t => tagify(t, tagLinks))
   const tags = fic.tags.filter(t => !/^(?:follows|genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
+    .filter(t => t !== 'skip-sfw')
     .map(t => t.replace(/^freeform:/, ''))
-    .map(t => t.replace(/:/, '‐'))
     .map(t => /altpower:/.test(t) ? tagify(t, Object.assign({}, xoverLinks))  : t)
 
-  if (fic.created) ourStream.write(`\n[b]Created on:[/b] ${relativeDate(fic.created)}`)
+  if (fic.created) ourStream.write(html`<br><b>Created on:</b> ${relativeDate(fic.created)}`)
   const updated = chapterDate(fic.newChapters[fic.newChapters.length -1])
-  ourStream.write(`\n[b]Updated on:[/b] ${relativeDate(updated)}`)
-  if (genre.length !== 0) ourStream.write(`\n[b]Genre:[/b] ${genre.join(', ')}`)
-  if (category.length !== 0) ourStream.write(`\n[b]Category:[/b] ${strify(category, catLinks)}`)
-  if (xover.length !== 0) ourStream.write(`\n[b]Crossover:[/b] ${strify(xover, xoverLinks)}`)
-  if (fusion.length !== 0) ourStream.write(`\n[b]Fusion:[/b] ${strify(fusion, xoverLinks)}`)
-  if (meta.length !== 0) ourStream.write(`\n[b]Meta-fanfiction of:[/b] ${strify(meta, ficLinks)}`)
-  if (tags.length !== 0) ourStream.write(`\n[b]Tags:[/b] ${strify(tags, Object.assign({}, tagLinks, charLinks))}`)
-  if (fic.pov != '' && fic.pov != null) ourStream.write(`\n[b]POV:[/b] ${strify(fic.pov.split(/, /), charLinks).trim()}`)
-  if (fic.otn.length) ourStream.write(`\n[b]Romantic pairing:[/b] ${strify(fic.otn, charLinks)}`)
-  if (fic.ftn.length) ourStream.write(`\n[b]Friendship pairing:[/b] ${strify(fic.ftn, charLinks)}`)
-  if (characters.length) ourStream.write(`\n[b]Characters:[/b] ${strify(characters, charLinks)}`)
-  if (rating.length) ourStream.write(`\n[b]Rating:[/b] ${rating}`)
-  if (fic.comments != '' && fic.comments != null) ourStream.write(`\n[b]Summary:[/b]\n${fic.comments.trim()}`)
-  ourStream.write('\n')
+  ourStream.write(html`<br><b>Updated on:</b> ${relativeDate(updated)}`)
+  if (genre.length !== 0) ourStream.write(html`<br><b>Genre:</b> ${genre.join(', ')}\n`)
+  if (category.length !== 0) ourStream.write(`<br><b>Category:</b> ${strify(category, catLinks)}\n`)
+  if (xover.length !== 0) ourStream.write(`<br><b>Crossover:</b> ${strify(xover, xoverLinks)}\n`)
+  if (fusion.length !== 0) ourStream.write(`<br><b>Fusion:</b> ${strify(fusion, xoverLinks)}\n`)
+  if (meta.length !== 0) ourStream.write(`<br><b>Meta-fanfiction of:</b> ${strify(meta, ficLinks)}\n`)
+  if (tags.length !== 0) ourStream.write(`<br><b>Tags:</b> ${strify(tags, Object.assign({}, tagLinks, charLinks))}\n`)
+  if (fic.pov != '' && fic.pov != null) ourStream.write(`<br><b>POV:</b> ${strify(fic.pov.split(/, /), charLinks)}\n`)
+  if (fic.otn.length) ourStream.write(`<br><b>Romantic pairing:</b> ${strify(fic.otn, charLinks)}\n`)
+  if (fic.ftn.length) ourStream.write(`<br><b>Friendship pairing:</b> ${strify(fic.ftn, charLinks)}\n`)
+  if (characters.length) ourStream.write(`<br><b>Characters:</b> ${strify(characters, charLinks)}\n`)
+  if (rating.length) ourStream.write(html`<br><b>Rating:</b> ${rating}\n`)
+  if (fic.comments != '' && typeof fic.comments === 'string') ourStream.write(`<br><b>Summary:</b><br>${marky(fic.comments)}\n`)
+  ourStream.write('</article>\n')
 }

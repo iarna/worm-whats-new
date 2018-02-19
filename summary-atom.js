@@ -79,7 +79,7 @@ function printSummary (start, end, ourStream) {
       if (fic.newChapters.length) fic.modified = chapterDate(fic.newChapters[fic.newChapters.length - 1])
       return fic.newChapters.length
     })
-    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW'))
+    .filter(fic => fic.tags.length === 0 || !fic.tags.some(t => t === 'noindex' || t === 'NSFW' || t === 'skip-sfw'))
     .filter(fic => fic.title !== 'Ward')
     .sort((a, b) => moment(a.modified).isAfter(b.modified) ? 1 : moment(a.modified).isBefore(b.modified) ? -1 : 0)
     .forEach(fic => {
@@ -114,7 +114,8 @@ function printFic (ourStream, fic) {
   const link = fic.links[0]
   const chapters = fic.chapters.length
   const newChapters = fic.newChapters.length
-  const firstUpdate = fic.newChapters[0] || fic.chapters[fic.chapters.length - 1]
+  const isUpdate = (fic.status !== 'new' && fic.status !== 'one-shot') || (fic.status === 'one-shot' && newChapters !== fic.chapters.length)
+  const firstUpdate = isUpdate ? fic.newChapters[0] || fic.chapters[fic.chapters.length - 1] : fic.chapters[0]
   const newWords = fic.newChapters.map(c => c.words).reduce((a, b) => a + b, 0)
   const authorurl = fic.authorurl
   let summary = []
@@ -140,6 +141,7 @@ function printFic (ourStream, fic) {
        .map(t => t.slice(10).replace(/ \(Worm\)/, '').replace(/ - Character/i, ''))
        .map(t => tagify(t, tagLinks))
   const tags = fic.tags.filter(t => !/^(?:genre|xover|fusion|meta|rating|rated|character|category|language):|^(?:NSFW|Quest|Snippets)$/i.test(t))
+    .filter(t => t !== 'skip-sfw')
     .map(t => t.replace(/^freeform:/, ''))
     .map(t => /altpower:/.test(t) ? tagify(t, Object.assign({}, charLinks, xoverLinks))  : t)
   summary.push(html`<b>Updated on:</b> ${chapterDate(fic.newChapters[fic.newChapters.length -1]).format('ddd [at] h a')} UTC`)
